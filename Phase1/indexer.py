@@ -11,6 +11,8 @@ class Indexer:
         self.inv_term_mapping = {}
         # positional indexing {t_id: {doc_id: [pos]}}
         self.dictionary = {}
+        # {doc_id: {t_id: tf}}
+        self.doc_dictionary = {}
         # bi_gram indexing {bi: {t_id}}
         self.bigram = {}
 
@@ -60,6 +62,7 @@ class Indexer:
         index doc_id and adds to the dictionary
         :return:
         """
+        self.doc_dictionary[doc_id] = {}
         with open(self.doc_directory + doc_id + '.txt', 'r') as file:
             line = file.readline()
             pos = []
@@ -74,6 +77,9 @@ class Indexer:
                         # update bigram_index
                         self.__bigram_indexer_add(t_id)
                     docs = self.dictionary.get(t_id)
+                    if self.doc_dictionary.get(doc_id).get(t_id) is None:
+                        self.doc_dictionary.get(doc_id)[t_id] = 0
+                    self.doc_dictionary.get(doc_id)[t_id] += 1
                     if docs is None:
                         self.dictionary[t_id] = {}
                         docs = self.dictionary.get(t_id)
