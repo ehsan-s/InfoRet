@@ -4,32 +4,25 @@ import unicodedata
 import nltk
 from nltk.stem import PorterStemmer
 
-from Phase1.preprocess import document_io
-
 
 class EnglishPreprocessor:
 
     def __init__(self):
-        self.eng_list = document_io.read_csv_file_as_list()
         self.stemmer = PorterStemmer()
         self.processed_list = None
         self.high_accur_param = 125
         self.dictionary = None
 
-    def preprocess(self, eng_list=None):
+    def preprocess(self, eng_list):
         """
 
         :param eng_list: [(title, text)]
         :return:
         """
         normalized_list = []
-        if eng_list is None:
-            eng_list = self.eng_list
         for news in eng_list:
-            ntitle = self.normalize_doc(news[0])
-            ntext = self.normalize_doc(news[1])
-
-            normalized_list.append(ntitle + ' ' + ntext)
+            text = self.normalize_doc(news)
+            normalized_list.append(text)
         self.processed_list = normalized_list
         self.remove_high_accured_words()
         self.dictionary = self.make_dictionary()
