@@ -11,7 +11,6 @@ from Phase1.preprocess import document_io
 class PersianPreprocessor:
 
     def __init__(self):
-        self.persian_list = document_io.read_persian_xml_file_as_list()
         self.stemmer = Stemmer()
         self.processed_list = None
         self.high_accur_param = 10000
@@ -27,10 +26,8 @@ class PersianPreprocessor:
         if persian_list is None:
             persian_list = self.persian_list
         for news in persian_list:
-            ntitle = self.normalize_doc(news[0])
-            ntext = self.normalize_doc(news[1])
-
-            normalized_list.append(ntitle + ' ' + ntext)
+            ntext = self.normalize_doc(news)
+            normalized_list.append(ntext)
         self.processed_list = normalized_list
         self.remove_high_accured_words()
         self.dictionary = self.make_dictionary()

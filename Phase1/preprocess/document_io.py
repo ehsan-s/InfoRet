@@ -14,7 +14,7 @@ def read_csv_file_as_list():
                 line_count += 1
             # print(f'\t{row["Title"]} -> {row["Text"]}.')
             line_count += 1
-            eng_list.append((row["Title"], row["Text"]))
+            eng_list.append(row["Title"] + ' ' + row["Text"])
         # print(f'Processed {line_count} lines.')
         return eng_list
 
@@ -27,7 +27,7 @@ def read_persian_xml_file_as_list():
     for page in root:
         title = page.find(prefix_element_name + 'title').text
         text = page.find(prefix_element_name + 'revision').find(prefix_element_name + 'text').text
-        per_list.append((title, text))
+        per_list.append(title + ' ' + text)
     return per_list
 
 

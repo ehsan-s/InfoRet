@@ -16,7 +16,7 @@ class EnglishPreprocessor:
     def preprocess(self, eng_list):
         """
 
-        :param eng_list: [(title, text)]
+        :param eng_list: ['text']
         :return:
         """
         normalized_list = []
