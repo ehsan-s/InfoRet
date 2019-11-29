@@ -34,7 +34,7 @@ class Indexer:
     def del_doc(self, doc_id):
         self.__indexer_remove(doc_id)
 
-        os.remove(self.doc_directory + doc_id + '.txt')
+        os.remove(self.doc_directory + str(doc_id) + '.txt')
         self.posting.remove(doc_id)
 
     def save_index(self):
@@ -45,7 +45,12 @@ class Indexer:
         return pickle.load(open(index_file, 'rb'))
 
     def get_posting(self, term):
-        return self.dictionary.get(term)
+        t_id = self.term_mapping.get(term)
+        return list(self.dictionary.get(t_id).keys())
+
+    def get_pos_posting(self, term):
+        t_id = self.term_mapping.get(term)
+        return self.dictionary.get(t_id)
 
     def get_bigram_posting(self, bi):
         t_id_set = self.bigram.get(bi)
@@ -63,11 +68,12 @@ class Indexer:
         :return:
         """
         self.doc_dictionary[doc_id] = {}
-        with open(self.doc_directory + doc_id + '.txt', 'r') as file:
+        with open(self.doc_directory + str(doc_id) + '.txt', 'r') as file:
             line = file.readline()
             pos = []
-            while not line == ' ':
-                for local_pos, term in enumerate(line):
+            while not line == '':
+                terms = line.rstrip('\n').split()
+                for local_pos, term in enumerate(terms):
                     t_id = self.term_mapping.get(term)
                     if t_id is None:
                         self.max_term_id += 1
@@ -91,7 +97,7 @@ class Indexer:
                     term_pos = len(pos) + local_pos
                     poses.append(term_pos)
 
-                pos.append(line)
+                pos.extend(terms)
                 line = file.readline()
 
     def __indexer_remove(self, doc_id):
@@ -100,6 +106,7 @@ class Indexer:
         :param doc_id:
         :return:
         """
+        self.doc_dictionary.pop(doc_id, None)
         for t_id in self.dictionary:
             self.dictionary.get(t_id).pop(doc_id, None)
             if self.dictionary.get(t_id) == {}:
@@ -110,8 +117,10 @@ class Indexer:
 
     def __bigram_indexer_add(self, t_id):
         term = self.inv_term_mapping.get(t_id)
-        for i in range(len(term) - 1):
+        for i in range(len(term)):
             bi = term[i:(i + 2)]
+            if len(bi) == 1:
+                bi = bi + "$"
             t_id_set = self.bigram.get(bi)
             if t_id_set is None:
                 self.bigram[bi] = set()
@@ -122,11 +131,13 @@ class Indexer:
         term = self.inv_term_mapping.get(t_id)
         for i in range(len(term) - 1):
             bi = term[i:(i + 2)]
+            if len(bi) == 1:
+                bi = bi + "$"
             t_id_set = self.bigram.get(bi)
             if t_id in t_id_set:
                 t_id_set.remove(t_id)
 
     def __save_doc(self, doc, doc_id):
-        with open(self.doc_directory + doc_id + '.txt', 'w') as file:
+        with open(self.doc_directory + str(doc_id) + '.txt', 'w') as file:
             file.write(doc)
             file.close()
