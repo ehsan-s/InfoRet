@@ -1,7 +1,6 @@
 import re
 import unicodedata
 
-import inflect
 import nltk
 from nltk.stem import PorterStemmer
 
@@ -12,7 +11,6 @@ class EnglishPreprocessor:
 
     def __init__(self):
         self.eng_list = document_io.read_csv_file_as_list()
-        self.inflect = inflect.engine()
         self.stemmer = PorterStemmer()
         self.processed_list = None
         self.high_accur_param = 125
@@ -50,7 +48,6 @@ class EnglishPreprocessor:
         word = self.remove_non_ascii(word)
         word = self.lower(word)
         word = self.remove_punctuation(word)
-        # word = self.replace_numbers(word)
         word = self.stem(word)
         return word
 
@@ -63,12 +60,6 @@ class EnglishPreprocessor:
 
     def remove_punctuation(self, word):
         return re.sub(r'[^\w\s]', '', word)
-
-    def replace_numbers(self, word):
-        new_word = word
-        if word.isdigit():
-            new_word = self.inflect.number_to_words(word)
-        return new_word
 
     def stem(self, word):
         return self.stemmer.stem(word)
