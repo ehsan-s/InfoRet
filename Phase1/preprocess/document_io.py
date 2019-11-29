@@ -29,3 +29,7 @@ def read_persian_xml_file_as_list():
         text = page.find(prefix_element_name + 'revision').find(prefix_element_name + 'text').text
         per_list.append((title, text))
     return per_list
+
+
+if __name__ == '__main__':
+    print(read_csv_file_as_list()[0][1])

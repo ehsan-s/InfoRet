@@ -16,13 +16,20 @@ class EnglishPreprocessor:
         self.high_accur_param = 125
         self.dictionary = None
 
-    def preprocess(self):
+    def preprocess(self, eng_list=None):
+        """
+
+        :param eng_list: [(title, text)]
+        :return:
+        """
         normalized_list = []
-        for news in self.eng_list:
+        if eng_list is None:
+            eng_list = self.eng_list
+        for news in eng_list:
             ntitle = self.normalize_doc(news[0])
             ntext = self.normalize_doc(news[1])
 
-            normalized_list.append([ntitle, ntext])
+            normalized_list.append(ntitle + ' ' + ntext)
         self.processed_list = normalized_list
         self.remove_high_accured_words()
         self.dictionary = self.make_dictionary()
@@ -34,7 +41,7 @@ class EnglishPreprocessor:
             nword = self.normalize(word)
             if nword is not None and nword != '':
                 normalized_words.append(nword)
-        return normalized_words
+        return ' '.join(normalized_words)
 
     def get_word_by_word(self, doc_str):
         words = self.tokenize(doc_str)
@@ -52,7 +59,7 @@ class EnglishPreprocessor:
         return word
 
     def remove_non_ascii(self, word):
-        return unicodedata.normalize('NFKD', word)\
+        return unicodedata.normalize('NFKD', word) \
             .encode('ascii', 'ignore').decode('utf-8', 'ignore')
 
     def lower(self, word):
@@ -65,41 +72,42 @@ class EnglishPreprocessor:
         return self.stemmer.stem(word)
 
     def make_dictionary(self):
-        dictionary = set()
+        dictionary = list()
         for news in self.processed_list:
-            for new in news:
-                for word in new:
-                    dictionary.add(word)
-        return dictionary
+            words = news.split()
+            dictionary.extend(words)
+        return set(dictionary)
 
     def get_accurance_dict(self):
         accurance_dict = {}
         for news in self.processed_list:
-            for new in news:
-                for word in new:
-                    accurance_dict[word] = accurance_dict.get(word, 0) + 1
+            words = news.split()
+            for word in words:
+                accurance_dict[word] = accurance_dict.get(word, 0) + 1
         return accurance_dict
 
-    def sort_by_accurance(self):
+    def sort_by_accurance(self, param=None):
+        if param is None:
+            param = self.high_accur_param
         accurance_dict = self.get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
-        for (k,v) in accurance_dict:
+        for (k, v) in accurance_dict[0:param]:
             print(k, " : ", v)
 
     def remove_high_accured_words(self):
         accurance_dict = self.get_accurance_dict()
-        high_accur_words = []
-        for k,v in accurance_dict.items():
+        high_accur_words = set()
+        for k, v in accurance_dict.items():
             if v >= self.high_accur_param:
-                high_accur_words.append(k)
-        #print(high_accur_words)
+                high_accur_words.add(k)
+        # print(high_accur_words)
         updated_processed_list = []
         for news in self.processed_list:
-            tuple = []
-            for new in news:
-                tuple.append(list(filter(lambda a: a not in high_accur_words, new)))
-            updated_processed_list.append(tuple)
-        self.processed_list = updated_processed_list
+            words = news.split()
+            for word in words:
+                if word not in high_accur_words:
+                    updated_processed_list.append(word)
+        self.processed_list = ' '.join(updated_processed_list)
         return self.processed_list
 
 
