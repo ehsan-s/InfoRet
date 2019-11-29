@@ -91,8 +91,8 @@ class EnglishPreprocessor:
             param = self.high_accur_param
         accurance_dict = self.get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
-        for (k, v) in accurance_dict[0:param]:
-            print(k, " : ", v)
+        return list(accurance_dict)[0:param]
+        # print(k, " : ", v)
 
     def remove_high_accured_words(self):
         accurance_dict = self.get_accurance_dict()
