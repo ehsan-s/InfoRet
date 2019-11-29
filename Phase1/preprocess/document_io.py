@@ -1,6 +1,6 @@
 import csv
 import xml.etree.ElementTree as ET
-
+import re
 
 def read_csv_file_as_list():
     file_path = '../../source/English.csv'
@@ -14,7 +14,9 @@ def read_csv_file_as_list():
                 line_count += 1
             # print(f'\t{row["Title"]} -> {row["Text"]}.')
             line_count += 1
-            eng_list.append(row["Title"] + ' ' + row["Text"])
+            title = re.sub(' +', ' ', row["Title"].strip())
+            text = re.sub(' +', ' ', row["Text"].strip())
+            eng_list.append(title + ' ' + text)
         # print(f'Processed {line_count} lines.')
         return eng_list
 
@@ -26,7 +28,9 @@ def read_persian_xml_file_as_list():
     per_list = []
     for page in root:
         title = page.find(prefix_element_name + 'title').text
+        title = re.sub(' +', ' ', title.strip())
         text = page.find(prefix_element_name + 'revision').find(prefix_element_name + 'text').text
+        text = re.sub(' +', ' ', text.strip())
         per_list.append(title + ' ' + text)
     return per_list
 

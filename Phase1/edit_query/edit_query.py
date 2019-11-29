@@ -1,8 +1,15 @@
+from Phase1.preprocess.english_preprocessor import EnglishPreprocessor
+from Phase1.preprocess.persian_preprocessor import PersianPreprocessor
+
 
 class EditQuery:
 
-    def __init__(self, token_list, indexer):
-        self.query_token_list = token_list
+    def __init__(self, query, indexer):
+        if EnglishPreprocessor().normalize(query):
+            normalized_query = EnglishPreprocessor().preprocess([query])
+        else:
+            normalized_query = PersianPreprocessor().preprocess([query])
+        self.query_token_list = normalized_query.split()
         self.indexer = indexer
 
     def edit(self):
@@ -64,7 +71,7 @@ class EditQuery:
         jaccard_index = len(intersect)/len(union)
         return jaccard_index
 
-EditQuery([], []).edit()
+EditQuery('salam', []).edit()
 # print(get_edit_distance("oslow", "snow"))
 # print(nltk.edit_distance("oslow", "snow"))
 #

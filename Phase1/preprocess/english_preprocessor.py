@@ -49,6 +49,7 @@ class EnglishPreprocessor:
         word = self.lower(word)
         word = self.remove_punctuation(word)
         word = self.stem(word)
+        word = re.sub(' +', ' ', word.strip())
         return word
 
     def remove_non_ascii(self, word):
@@ -108,6 +109,6 @@ class EnglishPreprocessor:
 
 
 prerprocessor = EnglishPreprocessor()
-prerprocessor.preprocess()
+# prerprocessor.preprocess()
 # prerprocessor.get_high_accurance()
-print(prerprocessor.remove_high_accured_words())
+print(not prerprocessor.normalize('بیسیسمنت ؟! .  %$!#^&*() @ یبکتمنسی   '))
