@@ -9,4 +9,4 @@ def show_normalized_text(text):
 def show_repet_words(param=None):
     ep = EP()
     ep.preprocess()
-    ep.sort_by_accurance(param)
+    ep.get_high_accurance(param)

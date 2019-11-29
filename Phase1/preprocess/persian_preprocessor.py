@@ -17,16 +17,23 @@ class PersianPreprocessor:
         self.high_accur_param = 10000
         self.dictionary = None
 
-    def preprocess(self):
+    def preprocess(self, persian_list=None):
+        """
+
+        :param eng_list: [(title, text)]
+        :return:
+        """
         normalized_list = []
-        for news in self.persian_list:
+        if persian_list is None:
+            persian_list = self.persian_list
+        for news in persian_list:
             ntitle = self.normalize_doc(news[0])
             ntext = self.normalize_doc(news[1])
 
-            normalized_list.append([ntitle, ntext])
+            normalized_list.append(ntitle + ' ' + ntext)
         self.processed_list = normalized_list
         self.remove_high_accured_words()
-        # self.dictionary = self.make_dictionary()
+        self.dictionary = self.make_dictionary()
         return normalized_list
 
     def normalize_doc(self, doc):
@@ -35,7 +42,7 @@ class PersianPreprocessor:
             nword = self.normalize(word)
             if nword is not None and nword != '':
                 normalized_words.append(nword)
-        return normalized_words
+        return ' '.join(normalized_words)
 
     def get_word_by_word(self, doc_str):
         words = self.tokenize(doc_str)
@@ -46,7 +53,6 @@ class PersianPreprocessor:
         return hazm.word_tokenize(doc_str)
 
     def normalize(self, word):
-        original_word
         word = self.remove_punctuation(word)
         word = self.stem(word)
         return word
@@ -58,42 +64,44 @@ class PersianPreprocessor:
         return self.stemmer.stem(word)
 
     def make_dictionary(self):
-        dictionary = set()
+        dictionary = list()
         for news in self.processed_list:
-            for new in news:
-                for word in new:
-                    dictionary.add(word)
-        return dictionary
+            words = news.split()
+            dictionary.extend(words)
+        return set(dictionary)
 
     def get_accurance_dict(self):
         accurance_dict = {}
         for news in self.processed_list:
-            for new in news:
-                for word in new:
-                    accurance_dict[word] = accurance_dict.get(word, 0) + 1
+            words = news.split()
+            for word in words:
+                accurance_dict[word] = accurance_dict.get(word, 0) + 1
         return accurance_dict
 
-    def sort_by_accurance(self):
+    def get_high_accurance(self):
         accurance_dict = self.get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
-        for (k,v) in accurance_dict:
-            if v < 100:
-                break
-            print(k, " : ", v)
+        result_dict = []
+        for (k, v) in accurance_dict:
+            if v >= self.high_accur_param:
+                result_dict.append((k, v))
+        return result_dict
 
     def remove_high_accured_words(self):
         accurance_dict = self.get_accurance_dict()
-        high_accur_words = []
-        for k,v in accurance_dict.items():
+        high_accur_words = set()
+        for (k, v) in accurance_dict.items():
             if v >= self.high_accur_param:
-                high_accur_words.append(k)
-        #print(high_accur_words)
+                high_accur_words.add(k)
+        # print(high_accur_words)
         updated_processed_list = []
         for news in self.processed_list:
-            tuple = []
-            for new in news:
-                tuple.append(list(filter(lambda a: a not in high_accur_words, new)))
-            updated_processed_list.append(tuple)
+            updated_news = []
+            words = news.split()
+            for word in words:
+                if word not in high_accur_words:
+                    updated_news.append(word)
+            updated_processed_list.append(' '.join(updated_news))
         self.processed_list = updated_processed_list
         return self.processed_list
 
