@@ -105,6 +105,6 @@ class EnglishPreprocessor:
 
 
 prerprocessor = EnglishPreprocessor()
-prerprocessor.preprocess()
+print(prerprocessor.remove_non_ascii('hello'))
 # prerprocessor.sort_by_accurance()
-print(prerprocessor.remove_high_accured_words())
+# print(prerprocessor.remove_high_accured_words())
