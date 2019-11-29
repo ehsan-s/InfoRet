@@ -16,7 +16,7 @@ class EnglishPreprocessor:
     def preprocess(self, eng_list):
         """
 
-        :param eng_list: [(title, text)]
+        :param eng_list: ['text']
         :return:
         """
         normalized_list = []
@@ -49,6 +49,7 @@ class EnglishPreprocessor:
         word = self.lower(word)
         word = self.remove_punctuation(word)
         word = self.stem(word)
+        word = re.sub(' +', ' ', word.strip())
         return word
 
     def remove_non_ascii(self, word):
@@ -79,28 +80,31 @@ class EnglishPreprocessor:
                 accurance_dict[word] = accurance_dict.get(word, 0) + 1
         return accurance_dict
 
-    def sort_by_accurance(self, param=None):
-        if param is None:
-            param = self.high_accur_param
+    def get_high_accurance(self):
         accurance_dict = self.get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
-        return list(accurance_dict)[0:param]
-        # print(k, " : ", v)
+        result_dict = []
+        for (k, v) in accurance_dict:
+            if v >= self.high_accur_param:
+                result_dict.append((k, v))
+        return result_dict
 
     def remove_high_accured_words(self):
         accurance_dict = self.get_accurance_dict()
         high_accur_words = set()
-        for k, v in accurance_dict.items():
+        for (k, v) in accurance_dict.items():
             if v >= self.high_accur_param:
                 high_accur_words.add(k)
         # print(high_accur_words)
         updated_processed_list = []
         for news in self.processed_list:
+            updated_news = []
             words = news.split()
             for word in words:
                 if word not in high_accur_words:
-                    updated_processed_list.append(word)
-        self.processed_list = ' '.join(updated_processed_list)
+                    updated_news.append(word)
+            updated_processed_list.append(' '.join(updated_news))
+        self.processed_list = updated_processed_list
         return self.processed_list
 
 
@@ -108,3 +112,6 @@ prerprocessor = EnglishPreprocessor()
 print(prerprocessor.remove_non_ascii('hello'))
 # prerprocessor.sort_by_accurance()
 # print(prerprocessor.remove_high_accured_words())
+# prerprocessor.preprocess()
+# prerprocessor.get_high_accurance()
+print(not prerprocessor.normalize('بیسیسمنت ؟! .  %$!#^&*() @ یبکتمنسی   '))

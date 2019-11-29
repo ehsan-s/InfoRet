@@ -83,3 +83,5 @@ if __name__ == '__main__':
             break
         else:
             print('wrong input')
+    ep.preprocess()
+    ep.get_high_accurance(param)
