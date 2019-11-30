@@ -55,9 +55,9 @@ class Indexer:
                 file.write(str(self.dictionary))
                 file.close()
         elif method == 'gamma':
-            GC.compress_to_file(self.dictionary, file_name)
+            GC.compress_to_binary_file(self.dictionary, file_name)
         elif method == 'var':
-            VC.compress_to_file(self.dictionary, file_name)
+            VC.compress_to_binary_file(self.dictionary, file_name)
 
     def load_dictionary(self, method="normal"):
         """
@@ -71,9 +71,9 @@ class Indexer:
                 self.dictionary = ast.literal_eval(file.readline())
                 file.close()
         elif method == 'gamma':
-            self.dictionary = GD.decompress_from_file(file_name)
+            self.dictionary = GD.decompress_from_binary_file(file_name)
         elif method == 'var':
-            self.dictionary = VD.decompress_from_file(file_name)
+            self.dictionary = VD.decompress_from_binary_file(file_name)
 
     @staticmethod
     def load(index_file='index.pkl'):
