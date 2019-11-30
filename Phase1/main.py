@@ -29,9 +29,9 @@ from Phase1.search import Searcher
 #                 print(norm_text)
 #             elif subsection == '2':
 #                 print('English Repetitive Words:')
-#                 print(ep_all.get_high_accurance())
+#                 print(ep_all.__find_high_accured_words())
 #                 print('Persian Repetitive Words:')
-#                 print(pp_all.get_high_accurance())
+#                 print(pp_all.__find_high_accured_words())
 #
 #         elif section == '2':
 #             if subsection == '1':
@@ -83,4 +83,4 @@ if __name__ == '__main__':
     indexer = Indexer()
     for doc in docs:
         indexer.add_doc(doc)
-    print(EQ('Europe us is here man!', indexer).edit())
+    print(EQ('Europe us is here man!', indexer, ep, None).edit())

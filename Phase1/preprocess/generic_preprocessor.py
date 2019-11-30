@@ -8,8 +8,10 @@ class GenericPreprocessor:
         self.processed_list = None
         self.high_accur_param = None
         self.must_be_words = None
+        self.stop_words = None
+        self.high_accured_words = None
 
-    def preprocess(self, text_list):
+    def preprocess(self, text_list, is_query = False):
         """
 
         :param text_list: ['text']
@@ -19,24 +21,30 @@ class GenericPreprocessor:
         for news in text_list:
             self.processed_list.append(self.normalize(news))
 
+        if not is_query:
+            self.high_accured_words = self.__find_high_accured_words()
+            self.stop_words = set()
+            for (k,v) in self.high_accured_words:
+                if k not in self.must_be_words:
+                    self.stop_words.add(k)
         self.remove_high_accured_words()
 
         normalized_list = []
         for news in self.processed_list:
-            text = self.stem_doc(news)
+            text = self.__stem_doc(news)
             normalized_list.append(text)
         self.processed_list = normalized_list
         return normalized_list
 
-    def stem_doc(self, doc):
+    def __stem_doc(self, doc):
         normalized_words = []
-        for word in self.get_word_by_word(doc):
+        for word in self.__get_word_by_word(doc):
             nword = self.stem(word)
             if nword is not None and nword != '':
                 normalized_words.append(nword)
         return ' '.join(normalized_words)
 
-    def get_word_by_word(self, doc_str):
+    def __get_word_by_word(self, doc_str):
         words = self.tokenize(doc_str)
         for word in words:
             yield word
@@ -56,7 +64,7 @@ class GenericPreprocessor:
     def remove_punctuation(self, word):
         return re.sub(r'[^\w\s]', '', word)
 
-    def get_accurance_dict(self):
+    def __get_accurance_dict(self):
         accurance_dict = {}
         for news in self.processed_list:
             words = news.split()
@@ -64,35 +72,30 @@ class GenericPreprocessor:
                 accurance_dict[word] = accurance_dict.get(word, 0) + 1
         return accurance_dict
 
-    def get_high_accurance(self):
-        accurance_dict = self.get_accurance_dict()
+    def __find_high_accured_words(self):
+        accurance_dict = self.__get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
-        result_dict = []
-        cnt = 0
+        high_accured_words = []
+        # cnt = 0
         for (k, v) in accurance_dict:
-            cnt += 1
-            if cnt < 100:
-                print(k + " " + str(v))
+            # cnt += 1
+            # if cnt < 100:
+            #     print(k + " " + str(v))
             if v >= self.high_accur_param:
-                result_dict.append((k, v))
-        return result_dict
+                high_accured_words.append((k, v))
+        return high_accured_words
+
+    def get_high_accured_words(self):
+        return self.high_accured_words
 
     def remove_high_accured_words(self):
-        accurance_dict = self.get_accurance_dict()
-        high_accur_words = set()
-        # self.get_high_accurance()
-        for (k, v) in accurance_dict.items():
-            if v >= self.high_accur_param:
-                high_accur_words.add(k)
-        for must_be in self.must_be_words:
-            high_accur_words.discard(must_be)
-        print('stop words are: ' + str(high_accur_words))
+        # print('stop words are: ' + str(self.high_accured_words))
         updated_processed_list = []
         for news in self.processed_list:
             updated_news = []
             words = news.split()
             for word in words:
-                if word not in high_accur_words:
+                if word not in self.stop_words:
                     updated_news.append(word)
             updated_processed_list.append(' '.join(updated_news))
         self.processed_list = updated_processed_list
