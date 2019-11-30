@@ -1,3 +1,6 @@
+import pickle
+
+
 class VariableByteCompressor:
 
     @staticmethod
@@ -5,15 +8,22 @@ class VariableByteCompressor:
         f = open(file, "wb")
         # positional indexing {t_id: {doc_id: [pos]}}
         sorted_dictionary = sorted(dictionary)
-        f.write(int(len(sorted_dictionary)).to_bytes(4, 'little') + b'\n')
-        for t_id in sorted(dictionary):
+        pickle_dictionary = {}
+        # f.write(int(len(sorted_dictionary)).to_bytes(4, 'little') + b'\n')
+        for t_id in sorted_dictionary:
+            pickle_tid = []
             posting_dict = dictionary[t_id]
             doc_id_list = sorted(posting_dict)
             variable_byte = VariableByteCompressor.__compress_posting_list(doc_id_list)
-            VariableByteCompressor.__write_variable_byte(f, variable_byte)
+            pickle_tid.append(variable_byte)
+            # VariableByteCompressor.__write_variable_byte(f, variable_byte)
             for doc_id in doc_id_list:
                 variable_byte = VariableByteCompressor.__compress_posting_list(posting_dict[doc_id])
-                VariableByteCompressor.__write_variable_byte(f, variable_byte)
+                pickle_tid.append(variable_byte)
+                # VariableByteCompressor.__write_variable_byte(f, variable_byte)
+            pickle_dictionary[t_id] = pickle_tid
+        print(pickle_dictionary)
+        pickle.dump(pickle_dictionary, open(file, 'wb'), pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
     def __write_variable_byte(f, variable_byte):
@@ -24,26 +34,25 @@ class VariableByteCompressor:
 
     @staticmethod
     def __compress_posting_list(posting_list):
-        vbcode = ''
+        vbcode = []
         if not len(posting_list):
             return vbcode
-        vbcode += VariableByteCompressor.__convert_int_to_vbcode(posting_list[0])
+        vbcode.extend(VariableByteCompressor.__convert_int_to_vbcode(posting_list[0]))
         for i in range(1, len(posting_list)):
-            vbcode += VariableByteCompressor \
-                .__convert_int_to_vbcode(posting_list[i] - posting_list[i - 1])
+            vbcode.extend(VariableByteCompressor.
+                          __convert_int_to_vbcode(posting_list[i] - posting_list[i - 1]))
         return vbcode
 
     @staticmethod
     def __convert_int_to_vbcode(num):
         binary_str = format(num, 'b')
         end_ptr = len(binary_str)
-        vbcode = ''
+        vbcode = []
         continuation_bit = '1'
         while end_ptr > 0:
             start_ptr = max(0, end_ptr - 7)
-            vbcode = VariableByteCompressor \
-                         .__fill_vb_8bits(binary_str[start_ptr:end_ptr], continuation_bit) \
-                     + vbcode
+            vbcode.insert(0, VariableByteCompressor.
+                          __fill_vb_8bits(binary_str[start_ptr:end_ptr], continuation_bit))
             continuation_bit = '0'
             end_ptr = start_ptr
         return vbcode
@@ -52,7 +61,8 @@ class VariableByteCompressor:
     def __fill_vb_8bits(binary_str, continuation_bit):
         if len(binary_str) > 7:
             raise Exception('wrong input argument!')
-        return str(continuation_bit) + '0' * (7 - len(binary_str)) + binary_str
+        byte = str(continuation_bit) + '0' * (7 - len(binary_str)) + binary_str
+        return int(byte, 2).to_bytes(1, 'little')
 
 
 class VariableByteDecompressor:
@@ -60,28 +70,24 @@ class VariableByteDecompressor:
     @staticmethod
     def decompress_from_binary_file(file='var_index.txt'):
         f = open(file, "rb")
-        dictionary = {}
-        tid_num = int(format(int.from_bytes(f.readline().strip(b'\n'), 'little')))
-        for i in range(tid_num):
+        dictionary = pickle.load(f)
+        for tid in sorted(dictionary):
             tid_dict = {}
-            doc_list = VariableByteDecompressor.read_posting_list(f)
-            for doc_id in doc_list:
-                posting_list = VariableByteDecompressor.read_posting_list(f)
+            pickle_tid = dictionary[tid]
+            doc_list = VariableByteDecompressor.__decompress_posting_list(pickle_tid[0])
+            for i in range(len(doc_list)):
+                doc_id = doc_list[i]
+                posting_list = VariableByteDecompressor.__decompress_posting_list(pickle_tid[i+1])
                 tid_dict[doc_id] = posting_list
-            dictionary[i] = tid_dict
+            dictionary[tid] = tid_dict
         return dictionary
 
     @staticmethod
-    def read_posting_list(f):
-        line = f.readline().strip(b'\n')
-        variable_byte = ''
-        for byte in line:
-            variable_byte += format(byte, '08b')
-        return VariableByteDecompressor.__decompress_posting_list(variable_byte)
-
-    @staticmethod
     def __decompress_posting_list(vbcode):
-        vbcode = [vbcode[i:i + 8] for i in range(0, len(vbcode), 8)]
+        new_vbcode = []
+        for byte in vbcode:
+            new_vbcode.append(format(int.from_bytes(byte, 'little'), '08b'))
+        vbcode = new_vbcode
         postings_list = []
         int_vbcode_list = []
         start_iterator = 0
@@ -106,15 +112,15 @@ class VariableByteDecompressor:
         binary_str = ''.join(vbcode)
         return int(binary_str, 2)
 
-# dic = {0:
-#            {1: [824, 829, 215607],
-#             2: [824, 829, 215607]},
-#        1:
-#            {1: [824, 829, 215607],
-#             2: [824, 829, 215607]},
-#        }
-# VariableByteCompressor().compress_to_binary_file(dic)
-# print(VariableByteDecompressor.decompress_from_binary_file())
+dic = {0:
+           {1: [824, 829, 215607],
+            2: [824, 829, 215607]},
+       1:
+           {1: [824, 829, 215607],
+            2: [824, 829, 215607]},
+       }
+VariableByteCompressor().compress_to_binary_file(dic)
+print(VariableByteDecompressor.decompress_from_binary_file())
 #
 # f = open("test_1", "wb")
 # for i in range(2):
