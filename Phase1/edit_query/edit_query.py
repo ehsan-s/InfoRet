@@ -10,7 +10,7 @@ class EditQuery:
             normalized_query = EnglishPreprocessor().preprocess([query])
         else:
             normalized_query = PersianPreprocessor().preprocess([query])
-        self.query_token_list = normalized_query.split()
+        self.query_token_list = normalized_query[0].split()
         self.indexer = indexer
 
     @staticmethod
