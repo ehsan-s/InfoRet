@@ -5,6 +5,7 @@ from Phase1.preprocess.document_io import read_csv_file_as_list as read_english,
     read_persian_xml_file_as_list as read_persian
 from Phase1.edit_query.edit_query import EditQuery as EQ
 from Phase1.search import Searcher
+
 import os
 
 if __name__ == '__main__':

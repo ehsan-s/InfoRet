@@ -1,21 +1,19 @@
-from Phase1.preprocess.english_preprocessor import EnglishPreprocessor
-from Phase1.preprocess.persian_preprocessor import PersianPreprocessor
-
 
 class EditQuery:
 
-    def __init__(self, query, indexer):
+    def __init__(self, query, indexer, eng_preprocessor, persian_preprocessor):
+        self.eng_preprocessor = eng_preprocessor
+        self.persian_preprocessor = persian_preprocessor
         is_eng = self.is_english(query)
         if is_eng:
-            normalized_query = EnglishPreprocessor().preprocess([query])
+            normalized_query = eng_preprocessor.preprocess([query], is_query=True)
         else:
-            normalized_query = PersianPreprocessor().preprocess([query])
+            normalized_query = persian_preprocessor.preprocess([query], is_query=True)
         self.query_token_list = normalized_query[0].split()
         self.indexer = indexer
 
-    @staticmethod
-    def is_english(query, ratio=0.5):
-        new_query = EnglishPreprocessor.remove_non_ascii(query)
+    def is_english(self, query, ratio=0.5):
+        new_query = self.eng_preprocessor.remove_non_ascii(query)
         if len(new_query) >= ratio * len(query):
             return True
         return False
