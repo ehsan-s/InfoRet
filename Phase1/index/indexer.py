@@ -43,13 +43,14 @@ class Indexer:
     def save_index(self):
         pickle.dump(self, open(self.index_file, 'wb'), pickle.HIGHEST_PROTOCOL)
 
-    def save_dictionary(self, method="normal"):
+    def save_dictionary(self, method="normal", file_name=None):
         """
 
         :param method: can be "normal", "gamma" or "var"
         :return:
         """
-        file_name = method + "_dict.txt"
+        if file_name is None:
+            file_name = method + "_dict.txt"
         if method == "normal":
             with open(file_name, 'w') as file:
                 file.write(str(self.dictionary))
@@ -59,13 +60,14 @@ class Indexer:
         elif method == 'var':
             VC.compress_to_binary_file(self.dictionary, file_name)
 
-    def load_dictionary(self, method="normal"):
+    def load_dictionary(self, method="normal", file_name=None):
         """
 
         :param method: can be "normal", "gamma" or "var"
         :return:
         """
-        file_name = method + "_dict.txt"
+        if file_name is None:
+            file_name = method + "_dict.txt"
         if method == "normal":
             with open(file_name, 'r') as file:
                 self.dictionary = ast.literal_eval(file.readline())

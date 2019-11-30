@@ -1,3 +1,5 @@
+from Phase1.preprocess.english_preprocessor import EnglishPreprocessor as EP
+
 
 class EditQuery:
 
@@ -12,8 +14,9 @@ class EditQuery:
         self.query_token_list = normalized_query[0].split()
         self.indexer = indexer
 
-    def is_english(self, query, ratio=0.5):
-        new_query = self.eng_preprocessor.remove_non_ascii(query)
+    @staticmethod
+    def is_english(query, ratio=0.5):
+        new_query = EP.remove_non_ascii(query)
         if len(new_query) >= ratio * len(query):
             return True
         return False
@@ -69,4 +72,3 @@ class EditQuery:
         union = bigram1_set.union(bigram2_set)
         jaccard_index = len(intersect) / len(union)
         return jaccard_index
-
