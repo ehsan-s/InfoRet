@@ -11,7 +11,7 @@ class GenericPreprocessor:
         self.stop_words = None
         self.high_accured_words = None
 
-    def preprocess(self, text_list, is_query = False):
+    def preprocess(self, text_list, is_query=False):
         """
 
         :param text_list: ['text']
@@ -24,7 +24,7 @@ class GenericPreprocessor:
         if not is_query:
             self.high_accured_words = self.__find_high_accured_words()
             self.stop_words = set()
-            for (k,v) in self.high_accured_words:
+            for (k, v) in self.high_accured_words:
                 if k not in self.must_be_words:
                     self.stop_words.add(k)
         self.remove_high_accured_words()
@@ -100,4 +100,3 @@ class GenericPreprocessor:
             updated_processed_list.append(' '.join(updated_news))
         self.processed_list = updated_processed_list
         return self.processed_list
-

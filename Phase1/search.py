@@ -63,7 +63,6 @@ class Searcher:
         :type query: str
         :return:
         """
-        print(query)
         v_q, t_ids = self.__calc_query_weight(query)
         doc_ids = []
         for id in t_ids:

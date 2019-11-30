@@ -23,7 +23,7 @@ if __name__ == '__main__':
             if subsection == '1':
                 print('Enter the text:')
                 txt = input()
-                is_eng = EQ.is_english(txt)
+                is_eng = EQ.is_english(query=txt)
                 if is_eng:
                     norm_text = EP().preprocess([txt])
                 else:
@@ -31,9 +31,9 @@ if __name__ == '__main__':
                 print(norm_text)
             elif subsection == '2':
                 print('English Repetitive Words:')
-                print(ep_all.get_high_accurance())
+                print(ep_all.get_high_accured_words())
                 print('Persian Repetitive Words:')
-                print(pp_all.get_high_accurance())
+                print(pp_all.get_high_accured_words())
 
         elif section == '2':
             if subsection == '1':
@@ -45,12 +45,12 @@ if __name__ == '__main__':
             elif subsection == '2':
                 print('Enter the term:')
                 term = input()
-                ed_term = EQ(term, indexer).edit()
+                ed_term = EQ(term, indexer, ep_all, pp_all).edit()
                 print(indexer.get_posting(ed_term))
             elif subsection == '3':
                 print('Enter the term:')
                 term = input()
-                ed_term = EQ(term, indexer).edit()
+                ed_term = EQ(term, indexer, ep_all, pp_all).edit()
                 print(indexer.get_pos_posting(ed_term))
 
         elif section == '3':
@@ -70,20 +70,19 @@ if __name__ == '__main__':
             if subsection == '1':
                 print('Enter the query:')
                 query = input()
-                print(EQ(query, indexer).edit())
+                print(EQ(query, indexer, ep_all, pp_all).edit())
         elif section == '5':
             if subsection == '1':
                 print('Enter the query:')
                 query = input()
-                ed_query = EQ(query, indexer).edit()
+                ed_query = EQ(query, indexer, ep_all, pp_all).edit()
                 print(Searcher(indexer).search(ed_query))
             elif subsection == '2':
                 print('Enter the query:')
                 query = input()
                 print('Enter the window size')
                 size = int(input())
-                ed_query = EQ(query, indexer).edit()
-                print(ed_query)
+                ed_query = EQ(query, indexer, ep_all, pp_all).edit()
                 print(Searcher(indexer).search_prox(ed_query, size))
         elif section == 'exit':
             break
