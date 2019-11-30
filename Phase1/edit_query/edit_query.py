@@ -22,12 +22,11 @@ class EditQuery:
 
     def edit(self):
         edited_token_list = []
-        self.query_token_list = ['carlo', 'carool']
         for query_token in self.query_token_list:
             token_bigram = self.create_bigram(query_token)
-            dictionary_candidate_words = set(['carol', 'carlos', 'carool', 'carloo'])
-            # for bi in token_bigram:
-            #     dictionary_candidate_words.union(set(self.indexer.get_bigram_posting(bi)))
+            dictionary_candidate_words = set()
+            for bi in token_bigram:
+                dictionary_candidate_words.union(set(self.indexer.get_bigram_posting(bi)))
 
             jaccard_dict = {}
             for dict_term in dictionary_candidate_words:
@@ -80,7 +79,6 @@ class EditQuery:
         return jaccard_index
 
 
-EditQuery('salam', []).edit()
 # print(get_edit_distance("oslow", "snow"))
 # print(nltk.edit_distance("oslow", "snow"))
 #
