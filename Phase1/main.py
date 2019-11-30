@@ -64,7 +64,7 @@ if __name__ == '__main__':
             elif subsection == '2':
                 indexer.save_dictionary(method='gamma', file_name='gamma_dict.txt')
                 print("gamma code‬‬ dict size: " + str(os.path.getsize('gamma_dict.txt')))
-                indexer.load_dictionary(method='gamma', file_name='gamma_dict.txt')
+                # indexer.load_dictionary(method='gamma', file_name='gamma_dict.txt')
                 print('Indexer saved and loaded')
         elif section == '4':
             if subsection == '1':
