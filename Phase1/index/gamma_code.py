@@ -16,6 +16,7 @@ class GammaCodeCompressor:
 
     @staticmethod
     def __compress_posting_list(posting_list):
+        posting_list = GammaCodeCompressor.__preprocess_posting_list(posting_list)
         gamma_code = ''
         if not len(posting_list):
             return gamma_code
@@ -24,6 +25,13 @@ class GammaCodeCompressor:
             gamma_code += GammaCodeCompressor. \
                 __convert_int_to_gamma_code(posting_list[i] - posting_list[i - 1])
         return gamma_code
+
+    @staticmethod
+    def __preprocess_posting_list(posting_list):
+        result_list = []
+        for num in posting_list:
+            result_list.append(num + 1)
+        return result_list
 
     @staticmethod
     def __convert_int_to_gamma_code(num):
@@ -72,5 +80,11 @@ class GammaCodeDecompressor:
             cur_num = int(offset, 2) + prev_num
             postings_list.append(cur_num)
             prev_num = cur_num
+        return GammaCodeDecompressor.__preprocess_posting_list(postings_list)
 
-        return postings_list
+    @staticmethod
+    def __preprocess_posting_list(posting_list):
+        result_list = []
+        for num in posting_list:
+            result_list.append(num - 1)
+        return result_list
