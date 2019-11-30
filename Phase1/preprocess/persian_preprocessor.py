@@ -106,6 +106,5 @@ class PersianPreprocessor:
 prerprocessor = PersianPreprocessor()
 prerprocessor.preprocess()
 print(prerprocessor.remove_punctuation(''))
-prerprocessor.sort_by_accurance()
 # hazm.Normalizer().normalize()
 # print(prerprocessor.remove_high_accured_words())

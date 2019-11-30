@@ -40,7 +40,7 @@ class EditQuery:
 
             edited_token_list.append(min_dist_word)
         print(edited_token_list)
-        return edited_token_list
+        return ' '.join(edited_token_list)
 
     def get_edit_distance(self, word1, word2):
         edit_distance = [[0 for i in range(len(word2) + 1)] for j in range(len(word1) + 1)]
