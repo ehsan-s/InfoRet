@@ -54,11 +54,13 @@ class Searcher:
         return v_q, list(query_ids.keys())
 
     def search(self, query):
+        query = query.split()
         """
 
-        :param query: list of terms
+        :type query: str
         :return:
         """
+        print(query)
         v_q, t_ids = self.__calc_query_weight(query)
         doc_ids = []
         for id in t_ids:
@@ -71,6 +73,7 @@ class Searcher:
         return self.__search(doc_ids, v_q)
 
     def search_prox(self, query, window_size):
+        query = query.split()
         v_q, t_ids = self.__calc_query_weight(query)
         semi_final_docs = set(self.indexer.dictionary.get(t_ids[0]).keys())
         for id in t_ids[1:]:

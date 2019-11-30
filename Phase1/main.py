@@ -4,69 +4,14 @@ from Phase1.indexer import Indexer
 from Phase1.preprocess.document_io import read_csv_file_as_list as read_english, \
     read_persian_xml_file_as_list as read_persian
 from Phase1.edit_query.edit_query import EditQuery as EQ
-
-
-def show_normalized_text(txt):
-    is_eng = EQ.is_english(txt)
-    if is_eng:
-        norm_text = EP().preprocess([txt])
-    else:
-        norm_text = PP().preprocess([txt])
-    return norm_text
-
-
-#
-#
-# def show_repet_words(ep, pp, p_text, e_text):
-#     ep.preprocess(e_text)
-#     pp.preprocess(p_text)
-#     eng_repet_words = ep.sort_by_accurance()
-#     p_repet_words = pp.sort_by_accurance()
-#     return eng_repet_words
-#
-#
-# def make_index():
-#     ep = EP()
-#     ep.preprocess(read_english())
-#     pp = PP()
-#     pp.preprocess(read_persian())
-#     eng_docs = ep.processed_list
-#     pers_docs = pp.processed_list
-#     indexer = Indexer()
-#     for doc in eng_docs:
-#         indexer.add_doc(doc)
-#     for doc in pers_docs:
-#         indexer.add_doc(doc)
-#     return indexer
-#
-#
-# def show_posting_list(indexer, term):
-#     eq = EQ(term, indexer)
-#     term = eq.edit()
-#     return indexer.get_posting(term)
-#
-#
-# def show_pos_posting(indexer, term):
-#     eq = EQ(term, indexer)
-#     term = eq.edit()
-#     return indexer.get_pos_posting(term)
-#
-#
-# def search(indexer, query):
-#     eq = EQ(query, indexer)
-#     query = eq.edit()
-#     searcher = Searcher(indexer)
-#     searcher.search(query)
-
+from Phase1.search import Searcher
 
 if __name__ == '__main__':
     ep_all = EP()
     pp_all = PP()
-    ep_all.preprocess(read_english())
-    pp_all.preprocess(read_persian())
-    # indexer = None
-    # english_text = read_english()
-    # persian_text = read_persian()
+    eng_docs = ep_all.preprocess(read_english())
+    per_docs = pp_all.preprocess(read_persian())
+    indexer = Indexer()
     while True:
         print('Enter the section number:')
         section = input()
@@ -75,26 +20,59 @@ if __name__ == '__main__':
         if section == '1':
             if subsection == '1':
                 print('Enter the text:')
-                text = input()
-                print(show_normalized_text(text))
+                txt = input()
+                is_eng = EQ.is_english(txt)
+                if is_eng:
+                    norm_text = EP().preprocess([txt])
+                else:
+                    norm_text = PP().preprocess([txt])
+                print(norm_text)
             elif subsection == '2':
                 print('English Repetitive Words:')
                 print(ep_all.get_high_accurance())
                 print('Persian Repetitive Words:')
                 print(pp_all.get_high_accurance())
 
-
         elif section == '2':
-            pass
+            if subsection == '1':
+                for doc in eng_docs:
+                    indexer.add_doc(doc)
+                for doc in per_docs:
+                    indexer.add_doc(doc)
+                print('Indexing is done')
+            elif subsection == '2':
+                print('Enter the term:')
+                term = input()
+                ed_term = EQ(term, indexer).edit()
+                print(indexer.get_posting(ed_term))
+            elif subsection == '3':
+                print('Enter the term:')
+                term = input()
+                ed_term = EQ(term, indexer).edit()
+                print(indexer.get_pos_posting(ed_term))
+
         elif section == '3':
+            # TODO compressing
             pass
         elif section == '4':
-            pass
+            if subsection == '1':
+                print('Enter the query:')
+                query = input()
+                print(EQ(query, indexer).edit())
         elif section == '5':
-            pass
+            if subsection == '1':
+                print('Enter the query:')
+                query = input()
+                ed_query = EQ(query, indexer).edit()
+                Searcher(indexer).search(ed_query)
+            elif subsection == '2':
+                print('Enter the query:')
+                query = input()
+                print('Enter the window size')
+                size = int(input())
+                ed_query = EQ(query, indexer).edit()
+                Searcher(indexer).search_prox(ed_query, size)
         elif section == 'exit':
             break
         else:
             print('wrong input')
-    # ep.preprocess()
-    # ep.get_high_accurance(param)
