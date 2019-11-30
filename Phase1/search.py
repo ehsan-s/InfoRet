@@ -27,7 +27,10 @@ class Searcher:
             length = np.linalg.norm(list(self.indexer.doc_dictionary.get(doc_id).values()))
             scores[doc_id] = scores.get(doc_id) / length
         top_scores = sorted(scores.items(), key=operator.itemgetter(1), reverse=True)[0:self.K]
-        return list(zip(*top_scores))[0]
+        l = list(zip(*top_scores))
+        if len(l) == 0:
+            return None
+        return l[0]
 
     def __calc_query_weight(self, query):
         """
