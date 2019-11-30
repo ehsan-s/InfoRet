@@ -1,6 +1,6 @@
 from Phase1.preprocess.persian_preprocessor import PersianPreprocessor as PP
 from Phase1.preprocess.english_preprocessor import EnglishPreprocessor as EP
-from Phase1.indexer import Indexer
+from Phase1.index.indexer import Indexer
 from Phase1.preprocess.document_io import read_csv_file_as_list as read_english, \
     read_persian_xml_file_as_list as read_persian
 from Phase1.edit_query.edit_query import EditQuery as EQ

@@ -1,4 +1,7 @@
 import os, pickle
+import ast
+from Phase1.index.gamma_code import GammaCodeCompressor as GC, GammaCodeDecompressor as GD
+from Phase1.index.variable_byte import VariableByteCompressor as VC, VariableByteDecompressor as VD
 
 
 class Indexer:
@@ -39,6 +42,38 @@ class Indexer:
 
     def save_index(self):
         pickle.dump(self, open(self.index_file, 'wb'), pickle.HIGHEST_PROTOCOL)
+
+    def save_dictionary(self, method="normal"):
+        """
+
+        :param method: can be "normal", "gamma" or "var"
+        :return:
+        """
+        file_name = method + "_dict.txt"
+        if method == "normal":
+            with open(file_name, 'w') as file:
+                file.write(str(self.dictionary))
+                file.close()
+        elif method == 'gamma':
+            GC.compress_to_file(self.dictionary, file_name)
+        elif method == 'var':
+            VC.compress_to_file(self.dictionary, file_name)
+
+    def load_dictionary(self, method="normal"):
+        """
+
+        :param method: can be "normal", "gamma" or "var"
+        :return:
+        """
+        file_name = method + "_dict.txt"
+        if method == "normal":
+            with open(file_name, 'r') as file:
+                self.dictionary = ast.literal_eval(file.readline())
+                file.close()
+        elif method == 'gamma':
+            self.dictionary = GD.decompress_from_file(file_name)
+        elif method == 'var':
+            self.dictionary = VD.decompress_from_file(file_name)
 
     @staticmethod
     def load(index_file='index.pkl'):
