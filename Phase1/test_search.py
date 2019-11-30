@@ -32,3 +32,14 @@ if __name__ == '__main__':
     print(indexer.dictionary)
     indexer.load_dictionary(method='var')
     print(indexer.dictionary)
+
+
+# dic = {0:
+#            {1: [824, 829, 215607],
+#             2: [824, 829, 215607]},
+#        1:
+#            {1: [824, 829, 215607],
+#             2: [824, 829, 215607]},
+#        }
+# GammaCodeCompressor().compress_to_binary_file(dic)
+# print(GammaCodeDecompressor().decompress_from_binary_file())

@@ -52,10 +52,9 @@ class Indexer:
         if file_name is None:
             file_name = method + "_dict.txt"
         if method == "normal":
-            with open(file_name, 'wb') as file:
-                pickle.dump(self.dictionary, file, pickle.HIGHEST_PROTOCOL)
-                # file.write(str())
-                # file.close()
+            with open(file_name, 'w') as file:
+                file.write(str(self.dictionary))
+                file.close()
         elif method == 'gamma':
             GC.compress_to_binary_file(self.dictionary, file_name)
         elif method == 'var':

@@ -16,12 +16,27 @@ class GammaCodeCompressor:
                 GammaCodeCompressor.__write_gamma_code(f, gamma_code)
 
     @staticmethod
+    def compress_to_binary_file(dictionary, file='gamma_index.txt'):
+        f = open(file, "wb")
+        # positional indexing {t_id: {doc_id: [pos]}}
+        sorted_dictionary = sorted(dictionary)
+        f.write(int(len(sorted_dictionary)).to_bytes(4, 'little'))
+        for t_id in sorted_dictionary:
+            posting_dict = dictionary[t_id]
+            doc_id_list = sorted(posting_dict)
+            variable_byte = GammaCodeCompressor.__compress_posting_list(doc_id_list)
+            GammaCodeCompressor.__write_gamma_code(f, variable_byte)
+            for doc_id in doc_id_list:
+                variable_byte = GammaCodeCompressor.__compress_posting_list(posting_dict[doc_id])
+                GammaCodeCompressor.__write_gamma_code(f, variable_byte)
+
+    @staticmethod
     def __write_gamma_code(f, gamma_code):
         gamma_code = '0' * (8 - (len(gamma_code) % 8)) + gamma_code
+        f.write(int(len(gamma_code)/8).to_bytes(4, 'little'))
         for i in range(0, len(gamma_code), 8):
             f.write(int(gamma_code[i:i + 8], 2)
                     .to_bytes(1, 'little'))
-        f.write(b'\n')
 
     @staticmethod
     def __compress_posting_list(posting_list):
@@ -63,7 +78,7 @@ class GammaCodeDecompressor:
     def decompress_from_binary_file(file='gamma_index.txt'):
         f = open(file, "rb")
         dictionary = {}
-        tid_num = int(format(int.from_bytes(f.readline().strip(b'\n'), 'little')))
+        tid_num = int(format(int.from_bytes(f.read(4), 'little')))
         for i in range(tid_num):
             tid_dict = {}
             doc_list = GammaCodeDecompressor.read_posting_list(f)
@@ -75,9 +90,10 @@ class GammaCodeDecompressor:
 
     @staticmethod
     def read_posting_list(f):
-        line = f.readline().strip(b'\n')
+        length = int(format(int.from_bytes(f.read(4), 'little')))
+        posting_byte = f.read(length)
         gamma_code = ''
-        for byte in line:
+        for byte in posting_byte:
             gamma_code += format(byte, '08b')
         gamma_code = gamma_code.lstrip('0')
         return GammaCodeDecompressor.__decompress_posting_list(gamma_code)
@@ -105,13 +121,3 @@ class GammaCodeDecompressor:
         for num in posting_list:
             result_list.append(num - 1)
         return result_list
-
-# dic = {0:
-#            {1: [824, 829, 215607],
-#             2: [824, 829, 215607]},
-#        1:
-#            {1: [824, 829, 215607],
-#             2: [824, 829, 215607]},
-#        }
-# GammaCodeCompressor().compress_to_binary_file(dic)
-# print(GammaCodeDecompressor().decompress_from_binary_file())
