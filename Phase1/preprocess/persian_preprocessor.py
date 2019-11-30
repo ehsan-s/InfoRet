@@ -5,9 +5,6 @@ import inflect
 import nltk
 from hazm import Stemmer
 
-from Phase1.preprocess import document_io
-
-
 class PersianPreprocessor:
 
     def __init__(self):
@@ -16,15 +13,13 @@ class PersianPreprocessor:
         self.high_accur_param = 10000
         self.dictionary = None
 
-    def preprocess(self, persian_list=None):
+    def preprocess(self, persian_list):
         """
 
         :param eng_list: [(title, text)]
         :return:
         """
         normalized_list = []
-        if persian_list is None:
-            persian_list = self.persian_list
         for news in persian_list:
             ntext = self.normalize_doc(news)
             normalized_list.append(ntext)
@@ -46,7 +41,8 @@ class PersianPreprocessor:
         for word in words:
             yield word
 
-    def tokenize(self, doc_str):
+    @staticmethod
+    def tokenize(doc_str):
         return hazm.word_tokenize(doc_str)
 
     def normalize(self, word):
@@ -54,7 +50,8 @@ class PersianPreprocessor:
         word = self.stem(word)
         return word
 
-    def remove_punctuation(self, word):
+    @staticmethod
+    def remove_punctuation(word):
         return re.sub(r'[^\w\s]', '', word)
 
     def stem(self, word):
@@ -103,8 +100,7 @@ class PersianPreprocessor:
         return self.processed_list
 
 
-prerprocessor = PersianPreprocessor()
-prerprocessor.preprocess()
-print(prerprocessor.remove_punctuation(''))
+# prerprocessor = PersianPreprocessor()
+# print(prerprocessor.remove_punctuation(''))
 # hazm.Normalizer().normalize()
 # print(prerprocessor.remove_high_accured_words())

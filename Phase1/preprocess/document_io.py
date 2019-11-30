@@ -2,8 +2,9 @@ import csv
 import xml.etree.ElementTree as ET
 import re
 
+
 def read_csv_file_as_list():
-    file_path = '../../source/English.csv'
+    file_path = '../source/English.csv'
     eng_list = []
     with open(file_path, mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
@@ -22,7 +23,7 @@ def read_csv_file_as_list():
 
 
 def read_persian_xml_file_as_list():
-    tree = ET.parse('../../source/Persian.xml')
+    tree = ET.parse('../source/Persian.xml')
     root = tree.getroot()
     prefix_element_name = "{http://www.mediawiki.org/xml/export-0.10/}"
     per_list = []

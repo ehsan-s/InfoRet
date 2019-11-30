@@ -41,7 +41,8 @@ class EnglishPreprocessor:
         for word in words:
             yield word
 
-    def tokenize(self, doc_str):
+    @staticmethod
+    def tokenize(doc_str):
         return nltk.word_tokenize(doc_str)
 
     def normalize(self, word):
@@ -52,14 +53,17 @@ class EnglishPreprocessor:
         word = re.sub(' +', ' ', word.strip())
         return word
 
-    def remove_non_ascii(self, word):
+    @staticmethod
+    def remove_non_ascii(word):
         return unicodedata.normalize('NFKD', word) \
             .encode('ascii', 'ignore').decode('utf-8', 'ignore')
 
-    def lower(self, word):
+    @staticmethod
+    def lower(word):
         return word.lower()
 
-    def remove_punctuation(self, word):
+    @staticmethod
+    def remove_punctuation(word):
         return re.sub(r'[^\w\s]', '', word)
 
     def stem(self, word):
@@ -108,10 +112,5 @@ class EnglishPreprocessor:
         return self.processed_list
 
 
-prerprocessor = EnglishPreprocessor()
-print(prerprocessor.remove_non_ascii('hello'))
-# prerprocessor.sort_by_accurance()
-# print(prerprocessor.remove_high_accured_words())
-# prerprocessor.preprocess()
-# prerprocessor.get_high_accurance()
-print(not prerprocessor.normalize('بیسیسمنت ؟! .  %$!#^&*() @ یبکتمنسی   '))
+# prerprocessor = EnglishPreprocessor()
+# print(not prerprocessor.normalize('بیسیسمنت ؟! .  %$!#^&*() @ یبکتمنسی   '))

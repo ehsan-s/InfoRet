@@ -5,12 +5,20 @@ from Phase1.preprocess.persian_preprocessor import PersianPreprocessor
 class EditQuery:
 
     def __init__(self, query, indexer):
-        if EnglishPreprocessor().normalize(query):
+        is_eng = self.is_english(query)
+        if is_eng:
             normalized_query = EnglishPreprocessor().preprocess([query])
         else:
             normalized_query = PersianPreprocessor().preprocess([query])
         self.query_token_list = normalized_query.split()
         self.indexer = indexer
+
+    @staticmethod
+    def is_english(query, ratio=0.5):
+        new_query = EnglishPreprocessor.remove_non_ascii(query)
+        if len(new_query) >= ratio * len(query):
+            return True
+        return False
 
     def edit(self):
         edited_token_list = []
@@ -50,9 +58,9 @@ class EditQuery:
             edit_distance[0][i] = i
         for i in range(1, len(word1) + 1):
             for j in range(1, len(word2) + 1):
-                edit_distance[i][j] = min(edit_distance[i][j-1] + 1,
-                                          edit_distance[i-1][j] + 1,
-                                          edit_distance[i-1][j-1] + (word1[i-1] != word2[j-1]))
+                edit_distance[i][j] = min(edit_distance[i][j - 1] + 1,
+                                          edit_distance[i - 1][j] + 1,
+                                          edit_distance[i - 1][j - 1] + (word1[i - 1] != word2[j - 1]))
         # for i in range(len(word1) + 1):
         #     print(edit_distance[i])
         # print(edit_distance[len(word1)][len(word2)])
@@ -60,7 +68,7 @@ class EditQuery:
 
     def create_bigram(self, word):
         s = word + "$"
-        bigram = [s[i-1] + s[i] for i in range(len(s))]
+        bigram = [s[i - 1] + s[i] for i in range(len(s))]
         return bigram
 
     def jaccard_index(self, word1, word2):
@@ -68,8 +76,9 @@ class EditQuery:
         bigram2_set = set(self.create_bigram(word2))
         intersect = bigram1_set.intersection(bigram2_set)
         union = bigram1_set.union(bigram2_set)
-        jaccard_index = len(intersect)/len(union)
+        jaccard_index = len(intersect) / len(union)
         return jaccard_index
+
 
 EditQuery('salam', []).edit()
 # print(get_edit_distance("oslow", "snow"))
