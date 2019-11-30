@@ -9,7 +9,6 @@ class GammaCodeCompressor:
         for t_id in sorted(dictionary):
             posting_dict = dictionary[t_id]
             doc_id_list = sorted(posting_dict)
-            print(doc_id_list)
             f.write(GammaCodeCompressor.__compress_posting_list(doc_id_list) + '\n')
             for doc_id in doc_id_list:
                 f.write(GammaCodeCompressor.__compress_posting_list(posting_dict[doc_id]) + '\n')
