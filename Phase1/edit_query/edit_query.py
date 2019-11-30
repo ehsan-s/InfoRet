@@ -26,8 +26,7 @@ class EditQuery:
             token_bigram = self.create_bigram(query_token)
             dictionary_candidate_words = set()
             for bi in token_bigram:
-                dictionary_candidate_words.union(set(self.indexer.get_bigram_posting(bi)))
-
+                dictionary_candidate_words = dictionary_candidate_words.union(set(self.indexer.get_bigram_posting(bi)))
             jaccard_dict = {}
             for dict_term in dictionary_candidate_words:
                 jaccard_dict[dict_term] = self.jaccard_index(query_token, dict_term)
@@ -39,14 +38,12 @@ class EditQuery:
                 counter += 1
                 if counter > 10:
                     break
-                print(jaccard_term + " " + str(jaccard_dist))
                 cur_edit_dist = self.get_edit_distance(jaccard_term, query_token)
                 if cur_edit_dist < min_edit_dist:
                     min_edit_dist = cur_edit_dist
                     min_dist_word = jaccard_term
 
             edited_token_list.append(min_dist_word)
-        print(edited_token_list)
         return ' '.join(edited_token_list)
 
     def get_edit_distance(self, word1, word2):
@@ -60,9 +57,6 @@ class EditQuery:
                 edit_distance[i][j] = min(edit_distance[i][j - 1] + 1,
                                           edit_distance[i - 1][j] + 1,
                                           edit_distance[i - 1][j - 1] + (word1[i - 1] != word2[j - 1]))
-        # for i in range(len(word1) + 1):
-        #     print(edit_distance[i])
-        # print(edit_distance[len(word1)][len(word2)])
         return edit_distance[len(word1)][len(word2)]
 
     def create_bigram(self, word):
@@ -78,9 +72,3 @@ class EditQuery:
         jaccard_index = len(intersect) / len(union)
         return jaccard_index
 
-
-# print(get_edit_distance("oslow", "snow"))
-# print(nltk.edit_distance("oslow", "snow"))
-#
-# print(jaccard_index("carlo", "carol"))
-# print(nltk.jaccard_distance("carlo", "carlo"))
