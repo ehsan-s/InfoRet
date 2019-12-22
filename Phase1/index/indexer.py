@@ -178,3 +178,7 @@ class Indexer:
         with open(self.doc_directory + str(doc_id) + '.txt', 'w') as file:
             file.write(doc)
             file.close()
+
+    def load_doc(self, doc_id):
+        file = open(self.doc_directory + str(doc_id) + '.txt', 'r')
+        return file.read()

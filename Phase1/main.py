@@ -3,12 +3,24 @@ from Phase1.preprocess.english_preprocessor import EnglishPreprocessor as EP
 from Phase1.index.indexer import Indexer
 from Phase1.preprocess.document_io import read_csv_file_as_list as read_english, \
     read_persian_xml_file_as_list as read_persian
+from Phase2.document_io import read_csv_file as read_english2
 from Phase1.edit_query.edit_query import EditQuery as EQ
 from Phase1.search import Searcher
+from Phase2.my_tfidf_vectorizer import MyTfIdfVectorizer
+
+from Phase2.svm import SVMClassifier as Classifier
 
 import os
 
 if __name__ == '__main__':
+    # Classifier
+    train_data = read_english2('../Phase2/source/phase2_train.csv')
+    test_data = read_english2('../Phase2/source/phase2_test.csv')
+    tfidf_vectorizer = MyTfIdfVectorizer(train_data[0], EP())
+    best_param = 1
+    classifier = Classifier(best_param, train_data, test_data, tfidf_vectorizer)
+    classifier.classify()
+
     ep_all = EP()
     pp_all = PP()
     eng_docs = ep_all.preprocess(read_english())
@@ -75,15 +87,23 @@ if __name__ == '__main__':
             if subsection == '1':
                 print('Enter the query:')
                 query = input()
+                print('Enter the subject (0 for none):')
+                subject = int(input())
+                if subject == 0:
+                    subject = None
                 ed_query = EQ(query, indexer, ep_all, pp_all).edit()
-                print(Searcher(indexer).search(ed_query))
+                print(Searcher(indexer, classifier).search(ed_query, subject))
             elif subsection == '2':
                 print('Enter the query:')
                 query = input()
                 print('Enter the window size')
                 size = int(input())
+                print('Enter the subject (0 for none):')
+                subject = int(input())
+                if subject == 0:
+                    subject = None
                 ed_query = EQ(query, indexer, ep_all, pp_all).edit()
-                print(Searcher(indexer).search_prox(ed_query, size))
+                print(Searcher(indexer, classifier).search_prox(ed_query, size, subject))
         elif section == 'exit':
             break
         else:
