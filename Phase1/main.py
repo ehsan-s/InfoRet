@@ -12,6 +12,7 @@ if __name__ == '__main__':
     ep_all = EP()
     pp_all = PP()
     eng_docs = ep_all.preprocess(read_english())
+    pass
     per_docs = pp_all.preprocess(read_persian())
     indexer = Indexer()
     while True:
