@@ -22,12 +22,8 @@ class GenericPreprocessor:
             self.processed_list.append(self.normalize(news))
 
         if not is_query:
-            self.high_accured_words = self.__find_high_accured_words()
-            self.stop_words = set()
-            for (k, v) in self.high_accured_words:
-                if k not in self.must_be_words:
-                    self.stop_words.add(k)
-        self.remove_high_accured_words()
+            self.set_stopwords()
+        self.remove_stopwords()
 
         normalized_list = []
         for news in self.processed_list:
@@ -61,6 +57,13 @@ class GenericPreprocessor:
     def stem(self, word):
         pass
 
+    def set_stopwords(self):
+        self.high_accured_words = self.__find_high_accured_words()
+        self.stop_words = set()
+        for (k, v) in self.high_accured_words:
+            if k not in self.must_be_words:
+                self.stop_words.add(k)
+
     def remove_punctuation(self, word):
         return re.sub(r'[^\w\s]', '', word)
 
@@ -75,12 +78,18 @@ class GenericPreprocessor:
     def __find_high_accured_words(self):
         accurance_dict = self.__get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
-        high_accured_words = []
-        # cnt = 0
+        total_accurance = 0
         for (k, v) in accurance_dict:
-            # cnt += 1
-            # if cnt < 100:
-            #     print(k + " " + str(v))
+            total_accurance += v
+        print(total_accurance)
+        accurance_dict = self.__get_accurance_dict()
+        accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
+        high_accured_words = []
+        cnt = 0
+        for (k, v) in accurance_dict:
+            cnt += 1
+            if cnt < 100:
+                print(k + " " + str(v) + " " + str(v/total_accurance))
             if v >= self.high_accur_param:
                 high_accured_words.append((k, v))
         return high_accured_words
@@ -88,7 +97,7 @@ class GenericPreprocessor:
     def get_high_accured_words(self):
         return self.high_accured_words
 
-    def remove_high_accured_words(self):
+    def remove_stopwords(self):
         # print('stop words are: ' + str(self.high_accured_words))
         updated_processed_list = []
         for news in self.processed_list:

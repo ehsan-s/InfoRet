@@ -30,4 +30,4 @@ class PersianPreprocessor(GenericPreprocessor):
 # prerprocessor = PersianPreprocessor()
 # print(prerprocessor.remove_punctuation(''))
 # hazm.Normalizer().stem()
-# print(prerprocessor.remove_high_accured_words())
+# print(prerprocessor.remove_stopwords())
