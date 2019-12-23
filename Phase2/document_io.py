@@ -18,4 +18,4 @@ def read_csv_file(addr='source/phase2_train.csv'):
             text = re.sub(' +', ' ', row["Text"].strip())
             tag_list.append(int(row["Tag"]))
             text_list.append(title + ' ' + text)
-        return text_list, tag_list
+        return {'text': text_list, 'tag': tag_list}
