@@ -7,7 +7,7 @@ class TfIdfClassifier:
         train_data: tuple(train_docs, train_tags)
         test_data: tuple(test_docs, test_tags)
     """
-    def __init__(self, train_data, test_data, tfidf_vectorizer, model=None):
+    def __init__(self, train_data, test_data, tfidf_vectorizer, model):
         self.tfidf_vectorizer = tfidf_vectorizer
 
         self.train_docs_sparse_matrix = self.tfidf_vectorizer.get_tfidf_vector_of_docs(train_data['text'])
@@ -40,6 +40,3 @@ class TfIdfClassifier:
             tags = self.test_tags
         predicted_tags = self.model.predict(sparse_matrix)
         print(classification_report(tags, predicted_tags))
-        print("micro f1_score = {:.3f}", f1_score(tags, predicted_tags, average='micro'))
-        print("macro f1_score = {:.3f}", f1_score(tags, predicted_tags, average='macro'))
-
