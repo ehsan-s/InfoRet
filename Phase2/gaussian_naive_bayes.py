@@ -10,15 +10,15 @@ class NaiveBayesClassifier:
     def __init__(self):
         self.prior_dict = dict()
         self.gaussian_likelihood = dict()
+        self.t_c = dict()
 
     def fit(self, doc_sparse_matrix, tags):
         self.__fit_gaussian_for_term_tag(doc_sparse_matrix, tags)
         self.__evaluate_prior(tags)
-        # print(self.prior_dict)
-        # print(self.gaussian_likelihood)
 
     def predict(self, doc_sparse_matrix):
         doc_size = doc_sparse_matrix.shape[0]
+        features_size = doc_sparse_matrix.shape[1]
         predicted_tags = []
 
         for i in range(doc_size):
@@ -35,11 +35,15 @@ class NaiveBayesClassifier:
                             prob = norm(mu, std).pdf(doc_sparse_matrix[i, term_ind])
                             if prob < 1:
                                 posterior *= prob
+                        else:
+                            prob = norm(mu, 1).pdf(doc_sparse_matrix[i, term_ind])
+                            posterior *= prob
+                    else:
+                        posterior *= (1/(self.t_c[c] + features_size))
                 if posterior > c_map:
                     c_map = posterior
                     predicted_tag = c
             predicted_tags.append(predicted_tag)
-        print(predicted_tags)
         return predicted_tags
 
     def __fit_gaussian_for_term_tag(self, doc_sparse_matrix, tags):
@@ -47,7 +51,8 @@ class NaiveBayesClassifier:
         for term_ind in range(features_size):
             term_sparse_matrix = doc_sparse_matrix.getcol(term_ind)
             class_tfidf_dict = self.__get_class_tfidf_dict(term_sparse_matrix, tags)
-            # print(term_ind, class_tfidf_dict)
+            for c in class_tfidf_dict:
+                self.t_c[c] = self.t_c.get(c, 0) + 1
             class_likelihhood_dict = dict()
             for tag, tfidf_list in class_tfidf_dict.items():
                 mu, std = norm.fit(tfidf_list)
@@ -90,21 +95,10 @@ from Phase2.my_tfidf_vectorizer import MyTfIdfVectorizer
 if __name__ == '__main__':
     train_data = read_english('source/phase2_train.csv')
     test_data = read_english('source/phase2_test.csv')
-    # train_data = {
-    #     'text': ['business manager tech man',
-    #              'sport soccer they man',
-    #              'tech computer information'],
-    #     'tag': [1, 2, 3]
-    # }
-    # test_data = {
-    #     'text': ['tech',
-    #              'tech information',
-    #              'tech manager'],
-    #     'tag': [3, 3, 1]
-    # }
+
     tfidf_vectorizer = MyTfIdfVectorizer(train_data['text'], Preprocessor())
     sparse = tfidf_vectorizer.get_tfidf_vector_of_docs(train_data['text'])
-    print('0 data:', sparse.getcol(0).data)
+
     naive_bayes_classifier = TfIdfClassifier(train_data, test_data, tfidf_vectorizer, NaiveBayesClassifier())
     naive_bayes_classifier.fit()
     naive_bayes_classifier.report()
