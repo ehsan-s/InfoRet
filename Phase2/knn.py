@@ -18,7 +18,7 @@ class KNN:
     def predict(self, X):
         n_samples = X.shape[0]
         # TODO may change dtype
-        predictions = np.empty((n_samples, ),
+        predictions = np.empty((n_samples,),
                                dtype=int)
         dist = pairwise_distances(X, self.train_X)
         for i, row in enumerate(dist):
@@ -34,12 +34,14 @@ if __name__ == '__main__':
     from Phase2.document_io import read_csv_file as read_english
     from Phase2.my_tfidf_vectorizer import MyTfIdfVectorizer
     from Phase2.preprocessor import Preprocessor
+
     train_data = read_english('source/phase2_train.csv')
     test_data = read_english('source/phase2_test.csv')
 
     tfidf_vectorizer = MyTfIdfVectorizer(train_data['text'], Preprocessor())
     knn = TfIdfClassifier(train_data, test_data, tfidf_vectorizer, KNN(5))
     knn.fit()
+    # test report
     knn.report()
-
-
+    # train report
+    knn.report(train_data)

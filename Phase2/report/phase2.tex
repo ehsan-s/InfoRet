@@ -77,4 +77,55 @@
 \end{subfigure}
 \end{center}
 \end{figure}
+\section*{ارزیابی نهایی}
+در زیر معیارهای خواسته‌شده برای هر یک از چهار الگوریتم آمده‌است. دقت کنید که پارامتر مربوط به \lr{SVM} و \lr{KNN} براساس \lr{validation} به ترتیب $C=0.5$ و $K=5$ در نظر گرفته‌شده است.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/naive_train.png}
+\caption{\lr{Naive Bayes}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/knn_train.png}
+\caption{\lr{k-NN}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/svm_train.png}
+\caption{\lr{SVM}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/rf_train.png}
+\caption{\lr{Random Forest}}
+\end{subfigure}
+\end{center}
+\caption{نتایج روی داده‌های آموزش}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/naive_test.png}
+\caption{\lr{Naive Bayes}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/knn_test.png}
+\caption{\lr{k-NN}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/svm_test.png}
+\caption{\lr{SVM}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/rf_test.png}
+\caption{\lr{Random Forest}}
+\end{subfigure}
+\end{center}
+\caption{نتایج روی داده‌های آزمون}
+\end{figure}
 \end{document}
