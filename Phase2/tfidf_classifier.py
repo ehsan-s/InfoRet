@@ -40,6 +40,4 @@ class TfIdfClassifier:
             tags = self.test_tags
         predicted_tags = self.model.predict(sparse_matrix)
         print(classification_report(tags, predicted_tags))
-        print("micro f1_score = {:.3f}", f1_score(tags, predicted_tags, average='micro'))
-        print("macro f1_score = {:.3f}", f1_score(tags, predicted_tags, average='macro'))
 
