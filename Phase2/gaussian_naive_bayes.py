@@ -10,11 +10,12 @@ class NaiveBayesClassifier:
     def __init__(self):
         self.prior_dict = dict()
         self.gaussian_likelihood = dict()
-        self.tags = set()
 
     def fit(self, doc_sparse_matrix, tags):
         self.__fit_gaussian_for_term_tag(doc_sparse_matrix, tags)
         self.__evaluate_prior(tags)
+        # print(self.prior_dict)
+        # print(self.gaussian_likelihood)
 
     def predict(self, doc_sparse_matrix):
         doc_size = doc_sparse_matrix.shape[0]
@@ -27,12 +28,18 @@ class NaiveBayesClassifier:
                 posterior = prior
                 col_list = doc_sparse_matrix.getrow(i).nonzero()[1]
                 for term_ind in col_list:
-                    (mu, std) = self.gaussian_likelihood[term_ind][c]
-                    posterior *= norm(mu, std).pdf(doc_sparse_matrix[i, term_ind])
+                    has_fitted_distr = c in self.gaussian_likelihood[term_ind]
+                    if has_fitted_distr:
+                        (mu, std) = self.gaussian_likelihood[term_ind][c]
+                        if std > 0.0:
+                            prob = norm(mu, std).pdf(doc_sparse_matrix[i, term_ind])
+                            if prob < 1:
+                                posterior *= prob
                 if posterior > c_map:
                     c_map = posterior
                     predicted_tag = c
             predicted_tags.append(predicted_tag)
+        print(predicted_tags)
         return predicted_tags
 
     def __fit_gaussian_for_term_tag(self, doc_sparse_matrix, tags):
@@ -40,10 +47,11 @@ class NaiveBayesClassifier:
         for term_ind in range(features_size):
             term_sparse_matrix = doc_sparse_matrix.getcol(term_ind)
             class_tfidf_dict = self.__get_class_tfidf_dict(term_sparse_matrix, tags)
+            # print(term_ind, class_tfidf_dict)
             class_likelihhood_dict = dict()
             for tag, tfidf_list in class_tfidf_dict.items():
                 mu, std = norm.fit(tfidf_list)
-                class_likelihhood_dict[tag] = tuple(mu, std)
+                class_likelihhood_dict[tag] = (mu, std)
             self.gaussian_likelihood[term_ind] = class_likelihhood_dict
 
     def __evaluate_prior(self, tags):
@@ -82,13 +90,24 @@ from Phase2.my_tfidf_vectorizer import MyTfIdfVectorizer
 if __name__ == '__main__':
     train_data = read_english('source/phase2_train.csv')
     test_data = read_english('source/phase2_test.csv')
-
+    # train_data = {
+    #     'text': ['business manager tech man',
+    #              'sport soccer they man',
+    #              'tech computer information'],
+    #     'tag': [1, 2, 3]
+    # }
+    # test_data = {
+    #     'text': ['tech',
+    #              'tech information',
+    #              'tech manager'],
+    #     'tag': [3, 3, 1]
+    # }
     tfidf_vectorizer = MyTfIdfVectorizer(train_data['text'], Preprocessor())
     sparse = tfidf_vectorizer.get_tfidf_vector_of_docs(train_data['text'])
     print('0 data:', sparse.getcol(0).data)
     naive_bayes_classifier = TfIdfClassifier(train_data, test_data, tfidf_vectorizer, NaiveBayesClassifier())
     naive_bayes_classifier.fit()
-    # naive_bayes_classifier.report()
+    naive_bayes_classifier.report()
     # print(naive_bayes_classifier.predict('sport world soccer'))
     # print(naive_bayes_classifier.predict('business business management'))
     # print(naive_bayes_classifier.predict('business business technology management'))
