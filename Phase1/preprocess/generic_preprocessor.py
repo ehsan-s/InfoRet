@@ -81,7 +81,7 @@ class GenericPreprocessor:
         total_accurance = 0
         for (k, v) in accurance_dict:
             total_accurance += v
-        print(total_accurance)
+        # print(total_accurance)
         accurance_dict = self.__get_accurance_dict()
         accurance_dict = reversed(sorted(accurance_dict.items(), key=lambda x: x[1]))
         high_accured_words = []
@@ -89,7 +89,8 @@ class GenericPreprocessor:
         for (k, v) in accurance_dict:
             cnt += 1
             if cnt < 100:
-                print(k + " " + str(v) + " " + str(v/total_accurance))
+                pass
+                # print(k + " " + str(v) + " " + str(v/total_accurance))
             if v >= self.high_accur_param:
                 high_accured_words.append((k, v))
         return high_accured_words

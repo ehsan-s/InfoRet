@@ -1,0 +1,80 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{float}
+\usepackage{subcaption}
+\include{SE-style}
+
+\begin{document}
+\lecture{دوم}%
+{احسان سلطان‌آقایی، وحید بالازاده مرشت}
+
+\section*{مشارکت وحید بالازاده}
+درصد مشارکت: ۵۰ درصد.\\
+
+کارهای انجام‌گرفته:
+\begin{itemize}
+\item بخش ۲: با استفاده از الگوریتم \lr{SVM} و با پارامتر $C=0.5$ که به عنوان بهترین پارامتر در قسمت \lr{validation} انتخاب شده بود، دسته‌بندی موضوعی به سیستم فاز اول اضافه شد. کافی است در هنگام جست‌و‌جو شماره‌ی مربوط به موضوع موردنظر نیز وارد شود. هم‌چنین تمام مستندات فاز اول موضوع‌بندی شدند.
+\item بخش ۱ (پیاده‌سازی الگوریتم\lr{KNN}): کد مربوط به این الگوریتم در فایل \lr{knn.py} آمده‌است. این الگوریتم براساس فاصله‌ی اقلیدسی بردارهای مستندات کار می‌کند.
+\item مقایسه‌ی پارامترهای مختلف در الگوریتم‌های \lr{SVM, KNN} با استفاده از \lr{validation} روی ده درصد از داده‌های آموزش. کد مربوط به این بخش در فایل \lr{validation.py} قرار دارد.
+\end{itemize}
+\section*{مشارکت احسان سلطان‌آقایی}
+درصد مشارکت: ۵۰ درصد.\\
+
+کارهای انجام‌گرفته:
+\begin{itemize}
+\item 
+بخش ۱: کد این بخش در فولدر \lr{preprocess} موجود است. در این قسمت داده‌های فارسی به فرمت \lr{xml} خوانده می‌شوند. از مجموعه داده‌های فارسی قسمت عنوان و متن صفحه‌های ویکی‌پدیا تحت یک متن به پیش‌پردازشگر داده می‌شود. از مجموعه داده‌های انگلیسی نیز عنوان و متن اخبار تحت یک متن به پیش‌پردازشگر داده می‌شود. پیش‌پردازشگر انگلیسی از کتابخانه \lr{NLTK} و پیش‌پردازشگر فارسی از کتابخانه \lr{hazm} استفاده می‌کند. هم‌چنین درصد معقولی از کلمات پرتکرار با پردازش متن و به کمک نمایش آن حذف می‌شوند.
+\item 
+بخش ۳: کد این بخش در فولدر \lr{compression} قرار دارد. نمایه ساخته‌شده در بخش ۲ را دریافت می‌کند و به دو روش \lr{variable byte} و \lr{gamma code} فشرده‌سازی می‌شود. نتیجه میزان حافظه اشغال شده به این صورت است که ذخیره سازی به صورت عادی ۱۴ مگابایت، ذخیره‌سازی به روش \lr{variable byte} حدود ۶ مگابایت و ذخیره‌سازی به روش \lr{gomma code} حدود ۷ مگابایت فضا اشغال می‌کند.
+\item
+بخش ۴: کد این بخش در فولدر \lr{edit query} موجود است. یک پرسمان دریافت می‌کند. ابتدا تشخیص می‌دهد که فارسی است یا انگلیسی، سپس پیش‌پردازش متناسب را روی آن انجام می‌دهد. سپس کلمات پرسمان را به ترتیب با کلمات نمایه به روش \lr{bigram} و با معیار \lr{jaccard} مقایسه می‌کند. در نهایت نزدیک ترین کلمه از بین کلمات منتخب به روش ذکر شده را با معیار \lr{edit distance} جایگزین کلمه پرسمان می‌کند.
+
+
+\end{itemize}
+\section*{یافتن بهترین پارامترها}
+\subsection*{الگوریتم \lr{SVM}}
+شکل‌های زیر نتایج اجرای پارامترهای مختلف را روی نود درصد از داده‌های آموزش و تست آن‌ها روی ده درصد داده‌ی \lr{validation} نشان می‌دهد. با توجه به نتایج بهترین پارامتر $C=0.5$ انتخاب شد.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c5.png}
+\caption{$C=0.5$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c1.png}
+\caption{$C=1$}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c15.png}
+\caption{$C=1.5$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c2.png}
+\caption{$C=2$}
+\end{subfigure}
+\end{center}
+\end{figure}
+
+\subsection*{الگوریتم \lr{KNN}}
+شکل‌های زیر نتایج اجرای پارامترهای مختلف را روی نود درصد از داده‌های آموزش و تست آن‌ها روی ده درصد داده‌ی \lr{validation} نشان می‌دهد. با توجه به این‌که تفاوت خاصی بین نتایج $K=5$ و $K=9$ نیست، ما $K=5$ را انتخاب می‌کنیم.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k1.png}
+\caption{$K=1$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k5.png}
+\caption{$K=5$}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k9.png}
+\caption{$K=9$}
+\end{subfigure}
+\end{center}
+\end{figure}
+\end{document}

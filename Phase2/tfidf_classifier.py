@@ -27,6 +27,13 @@ class TfIdfClassifier:
         doc_sparse_matrix = self.tfidf_vectorizer.get_tfidf_vector(raw_doc)
         return self.model.predict(doc_sparse_matrix)
 
+    def predict_docs(self, raw_docs):
+        if not self.is_learned:
+            self.fit()
+        docs_sparse_matrix = self.tfidf_vectorizer.get_tfidf_vector_of_docs(raw_docs)
+        return self.model.predict(docs_sparse_matrix)
+
+
     """
         raw_data: tuple(taw_docs, tags)
         if raw_data is None get report of test_data
