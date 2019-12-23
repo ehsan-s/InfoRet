@@ -1,9 +1,11 @@
 \documentclass[11pt]{article}
 \usepackage{url}
+\usepackage{float}
+\usepackage{subcaption}
 \include{SE-style}
 
 \begin{document}
-\lecture{اول}%
+\lecture{دوم}%
 {احسان سلطان‌آقایی، وحید بالازاده مرشت}
 
 \section*{مشارکت وحید بالازاده}
@@ -11,10 +13,9 @@
 
 کارهای انجام‌گرفته:
 \begin{itemize}
-\item بخش ۲: کد این بخش در فایل \lr{indexer.py} و در کلاس \lr{Indexer} قابل مشاهده است. در این بخش با استفاده از متودهای \lr{add\_doc} و \lr{del\_doc} می‌توان سندی را به نمایه اضافه و یا حذف کرد. از فیلدهای این کلاس در قسمت جستجو و بازیابی نیز استفاده می‌شود.
-\item بخش ۵: کد این بخش در فایل \lr{search.py} و در کلاس \lr{Searcher} قرار دارد. دو متد \lr{search} و \lr{search\_prox} به ترتیب برای جستجوی عادی و جستجوی \lr{proximity} استفاده می‌شوند. در هر دو متود روش \lr{lnc.ltc} به کار رفته‌است.
-\item تست کلاس‌های \lr{Searcher} و \lr{Indexer} نیز در فایل \lr{test\_search.py} آمده‌است.
-\item کد مربوط به بخش کنسول که در فایل \lr{main.py} قرار دارد.
+\item بخش ۲: با استفاده از الگوریتم \lr{SVM} و با پارامتر $C=0.5$ که به عنوان بهترین پارامتر در قسمت \lr{validation} انتخاب شده بود، دسته‌بندی موضوعی به سیستم فاز اول اضافه شد. کافی است در هنگام جست‌و‌جو شماره‌ی مربوط به موضوع موردنظر نیز وارد شود. هم‌چنین تمام مستندات فاز اول موضوع‌بندی شدند.
+\item بخش ۱ (پیاده‌سازی الگوریتم\lr{KNN}): کد مربوط به این الگوریتم در فایل \lr{knn.py} آمده‌است. این الگوریتم براساس فاصله‌ی اقلیدسی بردارهای مستندات کار می‌کند.
+\item مقایسه‌ی پارامترهای مختلف در الگوریتم‌های \lr{SVM, KNN} با استفاده از \lr{validation} روی ده درصد از داده‌های آموزش. کد مربوط به این بخش در فایل \lr{validation.py} قرار دارد.
 \end{itemize}
 \section*{مشارکت احسان سلطان‌آقایی}
 درصد مشارکت: ۵۰ درصد.\\
@@ -30,5 +31,50 @@
 
 
 \end{itemize}
+\section*{یافتن بهترین پارامترها}
+\subsection*{الگوریتم \lr{SVM}}
+شکل‌های زیر نتایج اجرای پارامترهای مختلف را روی نود درصد از داده‌های آموزش و تست آن‌ها روی ده درصد داده‌ی \lr{validation} نشان می‌دهد. با توجه به نتایج بهترین پارامتر $C=0.5$ انتخاب شد.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c5.png}
+\caption{$C=0.5$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c1.png}
+\caption{$C=1$}
+\end{subfigure}
 
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c15.png}
+\caption{$C=1.5$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c2.png}
+\caption{$C=2$}
+\end{subfigure}
+\end{center}
+\end{figure}
+
+\subsection*{الگوریتم \lr{KNN}}
+شکل‌های زیر نتایج اجرای پارامترهای مختلف را روی نود درصد از داده‌های آموزش و تست آن‌ها روی ده درصد داده‌ی \lr{validation} نشان می‌دهد. با توجه به این‌که تفاوت خاصی بین نتایج $K=5$ و $K=9$ نیست، ما $K=5$ را انتخاب می‌کنیم.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k1.png}
+\caption{$K=1$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k5.png}
+\caption{$K=5$}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k9.png}
+\caption{$K=9$}
+\end{subfigure}
+\end{center}
+\end{figure}
 \end{document}

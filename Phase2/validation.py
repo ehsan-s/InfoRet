@@ -27,7 +27,7 @@ def validation(model, parameters_list, validation_ratio=.1):
     new_train['tag'] = list(np.array(train_data['tag'])[mask])
     validation['text'] = list(np.array(train_data['text'])[validation_samples])
     validation['tag'] = list(np.array(train_data['tag'])[validation_samples])
-    classifier = TfIdfClassifier(new_train, validation, tfidf_vectorizer)
+    classifier = TfIdfClassifier(new_train, validation, tfidf_vectorizer, None)
     for parameter in parameters_list:
         if model == "svm":
             new_model = LinearSVC(C=parameter)
