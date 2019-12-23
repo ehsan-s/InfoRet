@@ -13,5 +13,5 @@ if __name__ == '__main__':
     #
     # tfidf_vectorizer = MyTfIdfVectorizer(train_data[0], EP())
     # svm = SVMClassifier(1, train_data, test_data, tfidf_vectorizer)
-    # svm.classify()
+    # svm.fit()
     # svm.test()

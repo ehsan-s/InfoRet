@@ -16,3 +16,6 @@ class MyTfIdfVectorizer:
     def get_tfidf_vector_of_docs(self, raw_docs):
         docs = self.preprocessor.preprocess(raw_docs)
         return self.vectorizer.transform(docs)
+
+    def get_feature_names(self):
+        return self.vectorizer.get_feature_names()

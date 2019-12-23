@@ -7,7 +7,7 @@ class TfIdfClassifier:
         train_data: tuple(train_docs, train_tags)
         test_data: tuple(test_docs, test_tags)
     """
-    def __init__(self, train_data, test_data, tfidf_vectorizer, model=None):
+    def __init__(self, train_data, test_data, tfidf_vectorizer, model):
         self.tfidf_vectorizer = tfidf_vectorizer
 
         self.train_docs_sparse_matrix = self.tfidf_vectorizer.get_tfidf_vector_of_docs(train_data['text'])
