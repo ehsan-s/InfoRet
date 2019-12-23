@@ -108,6 +108,7 @@ if __name__ == '__main__':
     naive_bayes_classifier = TfIdfClassifier(train_data, test_data, tfidf_vectorizer, NaiveBayesClassifier())
     naive_bayes_classifier.fit()
     naive_bayes_classifier.report()
+    naive_bayes_classifier.report(train_data)
     # print(naive_bayes_classifier.predict('sport world soccer'))
     # print(naive_bayes_classifier.predict('business business management'))
     # print(naive_bayes_classifier.predict('business business technology management'))
