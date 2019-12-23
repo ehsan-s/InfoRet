@@ -40,3 +40,4 @@ class TfIdfClassifier:
             tags = self.test_tags
         predicted_tags = self.model.predict(sparse_matrix)
         print(classification_report(tags, predicted_tags))
+

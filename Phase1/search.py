@@ -4,8 +4,9 @@ import heapq
 
 
 class Searcher:
-    def __init__(self, indexer):
+    def __init__(self, indexer, classifier=None):
         self.indexer = indexer
+        self.classifier = classifier
         self.K = 10
 
     def __search(self, doc_ids, v_q):
@@ -56,7 +57,7 @@ class Searcher:
             v_q /= norm
         return v_q, list(query_ids.keys())
 
-    def search(self, query):
+    def search(self, query, subject=None):
         query = query.split()
         """
 
@@ -69,12 +70,18 @@ class Searcher:
             doc_dict = self.indexer.dictionary.get(id)
             doc_id_tf = []
             for doc_id in doc_dict.keys():
+                # check the subject
+                if subject is not None:
+                    doc = self.indexer.load_doc(doc_id)
+                    tag = self.classifier.predict(doc)
+                    if tag != subject:
+                        continue
                 tf = len(doc_dict.get(doc_id))
                 doc_id_tf.append((doc_id, tf))
             doc_ids.append(doc_id_tf)
         return self.__search(doc_ids, v_q)
 
-    def search_prox(self, query, window_size):
+    def search_prox(self, query, window_size, subject=None):
         query = query.split()
         v_q, t_ids = self.__calc_query_weight(query)
         semi_final_docs = set(self.indexer.dictionary.get(t_ids[0]).keys())
@@ -100,6 +107,11 @@ class Searcher:
         for id in t_ids:
             doc_id_tf = []
             for doc_id in final_docs:
+                if subject is not None:
+                    doc = self.indexer.load_doc(doc_id)
+                    tag = self.classifier.predict(doc)
+                    if tag != subject:
+                        continue
                 tf = len(self.indexer.dictionary.get(id).get(doc_id))
                 doc_id_tf.append((doc_id, tf))
             doc_ids.append(doc_id_tf)
