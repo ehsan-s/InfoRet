@@ -35,7 +35,7 @@ class NBClassifier:
             self.t_c[train_tags[i]] = self.t_c.get(train_tags[i], 0) + len(doc_tokens)
             self.tag_num_dict[train_tags[i]] = self.tag_num_dict.get(train_tags[i], 0) + 1
 
-    def classify(self):
+    def fit(self):
         self.__preprocess_training_set(self.train_docs, self.train_tags)
         for c in self.tags:
             self.prior_dict[c] = self.tag_num_dict / self.train_num
