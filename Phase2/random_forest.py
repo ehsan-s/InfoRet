@@ -1,4 +1,4 @@
-from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
 
 from Phase2.tfidf_classifier import TfIdfClassifier
 from Phase2.document_io import read_csv_file as read_english
@@ -10,10 +10,9 @@ if __name__ == '__main__':
     test_data = read_english('source/phase2_test.csv')
 
     tfidf_vectorizer = MyTfIdfVectorizer(train_data['text'], Preprocessor())
-    c = 1
-    svm = TfIdfClassifier(train_data, test_data, tfidf_vectorizer, LinearSVC(C=c))
-    svm.fit()
-    svm.report()
-    print(svm.predict('sport world soccer'))
-    print(svm.predict('business business management'))
-    print(svm.predict('business business technology management'))
+    rfc = TfIdfClassifier(train_data, test_data, tfidf_vectorizer, RandomForestClassifier())
+    rfc.fit()
+    rfc.report()
+    print(rfc.predict('sport world soccer'))
+    print(rfc.predict('business business management'))
+    print(rfc.predict('business business technology management'))
