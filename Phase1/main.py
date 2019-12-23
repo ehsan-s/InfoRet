@@ -1,4 +1,5 @@
 from Phase1.preprocess.persian_preprocessor import PersianPreprocessor as PP
+from Phase2.preprocessor import Preprocessor as EP2
 from Phase1.preprocess.english_preprocessor import EnglishPreprocessor as EP
 from Phase1.index.indexer import Indexer
 from Phase1.preprocess.document_io import read_csv_file_as_list as read_english, \
@@ -7,8 +8,9 @@ from Phase2.document_io import read_csv_file as read_english2
 from Phase1.edit_query.edit_query import EditQuery as EQ
 from Phase1.search import Searcher
 from Phase2.my_tfidf_vectorizer import MyTfIdfVectorizer
+from sklearn.svm import LinearSVC
 
-from Phase2.svm import SVMClassifier as Classifier
+from Phase2.svm import TfIdfClassifier as Classifier
 
 import os
 
@@ -16,15 +18,14 @@ if __name__ == '__main__':
     # Classifier
     train_data = read_english2('../Phase2/source/phase2_train.csv')
     test_data = read_english2('../Phase2/source/phase2_test.csv')
-    tfidf_vectorizer = MyTfIdfVectorizer(train_data[0], EP())
-    best_param = 1
-    classifier = Classifier(best_param, train_data, test_data, tfidf_vectorizer)
-    classifier.classify()
+    tfidf_vectorizer = MyTfIdfVectorizer(train_data['text'], EP2())
+    best_model = LinearSVC(C=0.5)
+    classifier = Classifier(train_data, test_data, tfidf_vectorizer, best_model)
+    classifier.fit()
 
     ep_all = EP()
     pp_all = PP()
     eng_docs = ep_all.preprocess(read_english())
-    pass
     per_docs = pp_all.preprocess(read_persian())
     indexer = Indexer()
     while True:
@@ -105,15 +106,11 @@ if __name__ == '__main__':
                     subject = None
                 ed_query = EQ(query, indexer, ep_all, pp_all).edit()
                 print(Searcher(indexer, classifier).search_prox(ed_query, size, subject))
+        elif section == '6':
+            print("Classify all the English docs")
+            tags = classifier.predict_docs(eng_docs)
+            print(list(zip(range(len(eng_docs)), tags)))
         elif section == 'exit':
             break
         else:
             print('wrong input')
-
-# if __name__ == '__main__':
-#     ep = EP()
-#     docs = ep.preprocess(read_english())
-#     indexer = Indexer()
-#     for doc in docs:
-#         indexer.add_doc(doc)
-#     print(EQ('Europe us is here man!', indexer).edit())
