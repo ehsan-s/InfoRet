@@ -6,7 +6,7 @@ class MyTfIdfVectorizer:
     def __init__(self, raw_docs, preprocessor):
         self.preprocessor = preprocessor
         train_docs = preprocessor.preprocess(raw_docs)
-        self.vectorizer = TfidfVectorizer()
+        self.vectorizer = TfidfVectorizer(max_df=0.85, max_features=1000)
         self.vectorizer.fit(train_docs)
 
     def get_tfidf_vector(self, raw_doc):

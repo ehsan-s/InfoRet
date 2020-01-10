@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{float}
+\usepackage{subcaption}
+\include{SE-style}
+
+\begin{document}
+\lecture{سوم}%
+{احسان سلطان‌آقایی، وحید بالازاده مرشت}
+
+\section*{مشارکت وحید بالازاده}
+درصد مشارکت: ۵۰ درصد.\\
+
+کارهای انجام‌گرفته:
+\begin{itemize}
+\item بخش دوم: در این بخش با استفاده از کتابخانه‌ی \lr{BeautifulSoup} به پارس کردن صفحات \lr{html} پرداخته شد. ضمنا با استفاده از کلاس \lr{Cache} در فایل \lr{crawler.py} خروجی‌ها به صورت \lr{pickle} ذخیره شدند تا دوباره خزش انجام نشود. حاصل همه‌ی مقالات در فایل \lr{article.json} قرار دارد.
+\item بخش سوم: در این بخش ابتدا با استفاده از کتابخانه‌ی \lr{networkx} یک گراف روابط ساخته شده و سپس روی این گراف الگوریتم \lr{page rank} از کتابخانه‌ی \lr{networkx} اجرا شد. مهم‌ترین مقاله طبق این معیار مقاله‌ای با عنوان \lr{Normalized Cuts and Image Segmentation} بود.
+\end{itemize}
+\section*{مشارکت احسان سلطان‌آقایی}
+درصد مشارکت: ۵۰ درصد.\\
+
+کارهای انجام‌گرفته: \\ \\
+بخش اول: پس از بررسی تعداد خوشه‌های متفاوت، ۳ خوشه در نظر گرفته شد و خوشه‌بندی‌های انجام‌شده به صورت زیر هستند: \\
+\begin{itemize}
+\item 
+مدل \lr{k-means} : در شکل‌های زیر نتیجه خوشه‌بندی به این روش با استفاده از تبدیل‌کننده‌های به فضای برداری مختلف قابل مشاهده است: \\
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/kmeans_tfidf.png}
+\caption{\lr{KMeans with TfIdf}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/kmeans_w2v.png}
+\caption{\lr{KMeans with Word2Vec}}
+\end{subfigure}
+\end{center}
+\end{figure}
+
+\item 
+مدل \lr{Guassian Mixture Model} : در شکل‌های زیر نتیجه خوشه‌بندی به این روش با استفاده از تبدیل‌کننده‌های به فضای برداری مختلف قابل مشاهده است: \\
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/gmm_tfidf.png}
+\caption{\lr{GMM with TfIdf}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/gmm_w2v.png}
+\caption{\lr{GMM with Word2Vec}}
+\end{subfigure}
+\end{center}
+\end{figure}
+برای این مدل، دو نوع کواریانس \lr{full} و \lr{diag} بررسی شدند و در نهایت نوع \lr{full} مورد استفاده قرار گرفت.
+
+\item 
+مدل \lr{Hierarchical Clustering} : در شکل‌های زیر نتیجه خوشه‌بندی به این روش با استفاده از تبدیل‌کننده‌های به فضای برداری مختلف قابل مشاهده است: \\
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/hier_tfidf.png}
+\caption{\lr{Hierarchical with TfIdf}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/dendro_tfidf.png}
+\caption{\lr{Dendrogram with TfIdf}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/hier_w2v.png}
+\caption{\lr{Hierarchical with Word2Vec}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/dendro_w2v.png}
+\caption{\lr{Dendrogram with Word2Vec}}
+\end{subfigure}
+\end{center}
+\end{figure}
+
+\end{itemize}
+
+\end{document}

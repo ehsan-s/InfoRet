@@ -1,0 +1,143 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{float}
+\usepackage{subcaption}
+\include{SE-style}
+
+\begin{document}
+\lecture{دوم}%
+{احسان سلطان‌آقایی، وحید بالازاده مرشت}
+\section*{مشارکت وحید بالازاده}
+درصد مشارکت: ۵۰ درصد.\\
+
+کارهای انجام‌گرفته:
+\begin{itemize}
+\item بخش ۲: با استفاده از الگوریتم \lr{SVM} و با پارامتر $C=0.5$ که به عنوان بهترین پارامتر در قسمت \lr{validation} انتخاب شده بود، دسته‌بندی موضوعی به سیستم فاز اول اضافه شد. کافی است در هنگام جست‌و‌جو شماره‌ی مربوط به موضوع موردنظر نیز وارد شود. هم‌چنین تمام مستندات فاز اول موضوع‌بندی شدند.
+\item بخش ۱ (پیاده‌سازی الگوریتم\lr{KNN}): کد مربوط به این الگوریتم در فایل \lr{knn.py} آمده‌است. این الگوریتم براساس فاصله‌ی اقلیدسی بردارهای مستندات کار می‌کند.
+\item مقایسه‌ی پارامترهای مختلف در الگوریتم‌های \lr{SVM, KNN} با استفاده از \lr{validation} روی ده درصد از داده‌های آموزش. کد مربوط به این بخش در فایل \lr{validation.py} قرار دارد.
+\end{itemize}
+\section*{مشارکت احسان سلطان‌آقایی}
+درصد مشارکت: ۵۰ درصد.\\
+
+کارهای انجام‌گرفته:
+
+\begin{itemize}
+\item 
+بخش ۱ (پیاده‌سازی الگوریتم \lr{naive bayes}): به دو روش پیاده‌سازی شده است. اولی به اسم کلاسیک بدون در نظر گرفتن \lr{tf-idf} عمل می‌کند و طبق اسلاید ۱۵ درس پیاده‌سازی شده است. این روش دقت بالای ۹۰ درصد در داده‌های تست دارد. روش دوم به اسم \lr{gaussian} برای هر مستند یک بردار \lr{tf-idf} در نظر می‌گیرد و برای هر جفت کلمه و تگ به‌ازای همه مستندهایی که این کلمه در آن موجود است و متعلق به تگ مربوطه است \lr{tf-idf} را در نظر گرفته و یک توزیع نرمال به آن فیت می‌کنیم. سپس در محاسبه \lr{posterior} برای محاسبه \lr{likelihood} با فرض مستقل بودن کلمه‌ها از هم برای هر کلمه از توزیع نرمال حساب‌شده در قسمت قبل استفاده می‌کنیم. اگر برای جفت کلمه و تگی هیچ داده‌ای موجود نبود ولی کلمه جزو دیکشنری بود، احتمال آن را مطابق روش کلاسیک حساب می‌کنیم تا دقت روش دسته‌بندی‌مان بهبود یابد. در نهایت روش دوم به دلیل داده آموزش کم برای فیت‌کردن توزیع نرمال دقیق از دقت کم‌تری برخوردار است و دقت بالاتر از ۶۰ درصد داراست. \\
+\item
+بخش ۱ (پیاده‌سازی الگوریتم \lr{SVM and Random Forest}): این دو روش نیز به کمک کتاب‌خانه \lr{sklearn} پیاده‌سازی شده‌اند. هر دوی آن‌ها دقت بالای ۸۰ درصد دارند که در قسمت ارزیابی اطلاعات بیشتر آمده است.
+\item
+پیش‌پردازش‌ و پیاده‌سازی‌های کلی این فاز
+\end{itemize}
+
+\section*{یافتن بهترین پارامترها}
+\subsection*{الگوریتم \lr{SVM}}
+شکل‌های زیر نتایج اجرای پارامترهای مختلف را روی نود درصد از داده‌های آموزش و تست آن‌ها روی ده درصد داده‌ی \lr{validation} نشان می‌دهد. با توجه به نتایج بهترین پارامتر $C=0.5$ انتخاب شد.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c5.png}
+\caption{$C=0.5$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c1.png}
+\caption{$C=1$}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c15.png}
+\caption{$C=1.5$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/c2.png}
+\caption{$C=2$}
+\end{subfigure}
+\end{center}
+\end{figure}
+
+\subsection*{الگوریتم \lr{KNN}}
+شکل‌های زیر نتایج اجرای پارامترهای مختلف را روی نود درصد از داده‌های آموزش و تست آن‌ها روی ده درصد داده‌ی \lr{validation} نشان می‌دهد. با توجه به این‌که تفاوت خاصی بین نتایج $K=5$ و $K=9$ نیست، ما $K=5$ را انتخاب می‌کنیم.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k1.png}
+\caption{$K=1$}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k5.png}
+\caption{$K=5$}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/k9.png}
+\caption{$K=9$}
+\end{subfigure}
+\end{center}
+\end{figure}
+\section*{ارزیابی نهایی}
+در زیر معیارهای خواسته‌شده برای هر یک از چهار الگوریتم آمده‌است. دقت کنید که پارامتر مربوط به \lr{SVM} و \lr{KNN} براساس \lr{validation} به ترتیب $C=0.5$ و $K=5$ در نظر گرفته‌شده است.
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/classic_naive_train.jpg}
+\caption{\lr{Classic Naive Bayes}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/knn_train.png}
+\caption{\lr{k-NN}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/svm_train.png}
+\caption{\lr{SVM}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/rf_train.png}
+\caption{\lr{Random Forest}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/gaussian_naive_train.jpg}
+\caption{\lr{Gaussian Naive Bayes}}
+\end{subfigure}
+
+\end{center}
+\caption{نتایج روی داده‌های آموزش}
+\end{figure}
+
+
+\begin{figure}[H]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/classic_naive_test.jpg}
+\caption{\lr{Classic Naive Bayes}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/knn_test.png}
+\caption{\lr{k-NN}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/svm_test.png}
+\caption{\lr{SVM}}
+\end{subfigure}
+~
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/rf_test.png}
+\caption{\lr{Random Forest}}
+\end{subfigure}
+
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width=\textwidth]{pics/gaussian_naive_test.jpg}
+\caption{\lr{Gaussian Naive Bayes}}
+\end{subfigure}
+
+\end{center}
+\caption{نتایج روی داده‌های آزمون}
+\end{figure}
+\end{document}
