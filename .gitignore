@@ -321,3 +321,5 @@ Phase1/docs/*
 docs/*
 Phase1/index/saved/*
 Phase1/*.txt
+
+Phase3/cache/
