@@ -5,6 +5,8 @@ import pickle, os
 from _md5 import md5
 import time
 
+import networkx as nx
+
 
 class Cache:
     def __init__(self, cache_dir='cache/'):
@@ -85,3 +87,31 @@ if __name__ == '__main__':
         crawler = Crawler()
         results = crawler.crawl()
         json.dump(results, open('articles.json', 'w'))
+
+    articles = json.load(open('articles.json', 'r'))
+    article_ids = {}
+    id_article = {}
+    id = 0
+    graph = nx.DiGraph()
+    for article in articles:
+        graph.add_node(id)
+        article_ids[article['id']] = id
+        id_article[id] = article['title']
+        id += 1
+
+    # add edges
+    for article in articles:
+        refs = article['references']
+        for ref in refs:
+            ref_id = article_ids.get(ref.split('/')[-1])
+            if ref_id is None:
+                continue
+            graph.add_edge(article_ids[article['id']], ref_id)
+
+    # page rank alg
+
+    alpha = float(input('input alpha:'))
+    pg_rank = nx.pagerank(graph, alpha)
+    doc_ranks = [(id_article[id], rank) for id, rank in pg_rank.items()]
+    doc_ranks.sort(key=lambda tup: tup[1], reverse=True)
+    print(doc_ranks)
